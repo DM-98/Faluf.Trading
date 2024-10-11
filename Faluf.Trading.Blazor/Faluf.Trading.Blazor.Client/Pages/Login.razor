@@ -1,0 +1,43 @@
+﻿@page "/login"
+
+@inject IAuthService AuthService
+
+<h3>Login</h3>
+
+<AuthorizeView>
+    <Authorized>
+        <p>You are already logged in.</p>
+    </Authorized>
+
+    <NotAuthorized>
+        <EditForm Model="@loginModel" OnValidSubmit="LoginAsync" Context="formContext">
+            <div>
+                <label for="email">Email:</label>
+                <InputText id="email" @bind-Value="@loginModel.Email" />
+            </div>
+
+            <div>
+                <label for="password">Password:</label>
+                <InputText id="password" @bind-Value="@loginModel.Password" />
+            </div>
+
+            <button type="submit">Login</button>
+        </EditForm>
+    </NotAuthorized>
+</AuthorizeView>
+
+@if (tokenDTO is not null)
+{
+    <p>AccessToken: @tokenDTO.AccessToken</p>
+    <p>RefreshToken: @tokenDTO.RefreshToken</p>
+}
+
+@code {
+    private LoginInputModel loginModel = new() { ClientType = ClientType.Blazor };
+    private TokenDTO? tokenDTO;
+
+    private async Task LoginAsync()
+    {
+        tokenDTO = (await AuthService.LoginAsync(loginModel)).Content;
+    }
+}

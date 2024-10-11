@@ -1,0 +1,17 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Faluf.Trading.Core.Abstractions.Models;
+
+public abstract class BaseEntity : ISoftDeletable
+{
+	[Key]
+	public Guid Id { get; set; } = Guid.NewGuid();
+
+	public DateTime CreatedAtUTC { get; set; } = DateTime.UtcNow;
+
+	public DateTime? UpdatedAtUTC { get; set; }
+
+	public bool IsDeleted => DeletedAtUTC.HasValue;
+
+	public DateTime? DeletedAtUTC { get; set; }
+}

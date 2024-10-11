@@ -1,0 +1,60 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35309.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faluf.Trading.AppHost", "Faluf.Trading.AppHost\Faluf.Trading.AppHost.csproj", "{856E57F6-F361-4FF9-B93D-C0E45508D39E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faluf.Trading.ServiceDefaults", "Faluf.Trading.ServiceDefaults\Faluf.Trading.ServiceDefaults.csproj", "{39C1F2DA-4AD1-45EB-9C7E-93EA4CDA8A88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faluf.Trading.Blazor", "Faluf.Trading.Blazor\Faluf.Trading.Blazor\Faluf.Trading.Blazor.csproj", "{C7666034-D452-4775-B12A-37DBEB327ED5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faluf.Trading.Blazor.Client", "Faluf.Trading.Blazor\Faluf.Trading.Blazor.Client\Faluf.Trading.Blazor.Client.csproj", "{E5CAC805-1B0E-4ED5-80E4-83448DCEBD51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faluf.Trading.Core", "Faluf.Trading.Core\Faluf.Trading.Core.csproj", "{3CE41065-934E-4412-AEEF-AB6D3E79A747}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faluf.Trading.Infrastructure", "Faluf.Trading.Infrastructure\Faluf.Trading.Infrastructure.csproj", "{287694E9-8AA9-412B-83B8-C9D0C61FFADF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faluf.Trading.Localization", "Faluf.Trading.Localization\Faluf.Trading.Localization.csproj", "{4EF2DF60-80F5-4193-B346-5EC706135885}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{856E57F6-F361-4FF9-B93D-C0E45508D39E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{856E57F6-F361-4FF9-B93D-C0E45508D39E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{856E57F6-F361-4FF9-B93D-C0E45508D39E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{856E57F6-F361-4FF9-B93D-C0E45508D39E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39C1F2DA-4AD1-45EB-9C7E-93EA4CDA8A88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39C1F2DA-4AD1-45EB-9C7E-93EA4CDA8A88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39C1F2DA-4AD1-45EB-9C7E-93EA4CDA8A88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39C1F2DA-4AD1-45EB-9C7E-93EA4CDA8A88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7666034-D452-4775-B12A-37DBEB327ED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7666034-D452-4775-B12A-37DBEB327ED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7666034-D452-4775-B12A-37DBEB327ED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7666034-D452-4775-B12A-37DBEB327ED5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5CAC805-1B0E-4ED5-80E4-83448DCEBD51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5CAC805-1B0E-4ED5-80E4-83448DCEBD51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5CAC805-1B0E-4ED5-80E4-83448DCEBD51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5CAC805-1B0E-4ED5-80E4-83448DCEBD51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CE41065-934E-4412-AEEF-AB6D3E79A747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CE41065-934E-4412-AEEF-AB6D3E79A747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CE41065-934E-4412-AEEF-AB6D3E79A747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CE41065-934E-4412-AEEF-AB6D3E79A747}.Release|Any CPU.Build.0 = Release|Any CPU
+		{287694E9-8AA9-412B-83B8-C9D0C61FFADF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{287694E9-8AA9-412B-83B8-C9D0C61FFADF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{287694E9-8AA9-412B-83B8-C9D0C61FFADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{287694E9-8AA9-412B-83B8-C9D0C61FFADF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EF2DF60-80F5-4193-B346-5EC706135885}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EF2DF60-80F5-4193-B346-5EC706135885}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EF2DF60-80F5-4193-B346-5EC706135885}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EF2DF60-80F5-4193-B346-5EC706135885}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FB776099-6D44-44AE-AFCD-224A6FBBE818}
+	EndGlobalSection
+EndGlobal
