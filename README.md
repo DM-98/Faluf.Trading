@@ -13,3 +13,4 @@ A hobby project with focus on:
 - FluentValidation
 - HybridCache
 - Domain-Driven Design (DDD), clean code, best practices, SOLID & GRASP
+- AI with Semantic Kernel, OpenAI, Local LLM & RAG
