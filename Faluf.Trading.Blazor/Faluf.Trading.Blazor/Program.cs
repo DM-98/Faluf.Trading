@@ -1,13 +1,11 @@
 using Faluf.Trading.Blazor.Helpers;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Mvc;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.AddServiceDefaults();
-
-builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddInteractiveWebAssemblyComponents();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddInteractiveWebAssemblyComponents().AddAuthenticationStateSerialization();
 builder.Services.AddControllers();
-builder.Services.AddCors(options => options.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 builder.Services.AddDataProtection().PersistKeysToDbContext<TradingDbContext>();
 
 // Trading DI
@@ -19,10 +17,9 @@ builder.Services.AddTradingServices();
 
 builder.Services.AddOpenApi();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 
 WebApplication app = builder.Build();
-
-app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
@@ -42,16 +39,13 @@ else
 	app.UseHsts();
 }
 
-app.UseCors("AllowAll");
 app.UseHttpsRedirection();
-
-app.MapStaticAssets();
-app.UseStaticFiles();
 app.UseAntiforgery();
 
 string[] supportedCultures = ["en-US", "da-DK"];
 app.UseRequestLocalization(new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0]).AddSupportedCultures(supportedCultures).AddSupportedUICultures(supportedCultures));
 
+app.MapStaticAssets();
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode().AddInteractiveWebAssemblyRenderMode().AddAdditionalAssemblies(typeof(Faluf.Trading.Blazor.Client._Imports).Assembly);
 app.MapControllers();
 

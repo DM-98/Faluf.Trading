@@ -7,15 +7,10 @@ namespace Faluf.Trading.Blazor.Controllers;
 public sealed class AuthController(IAuthService authService) : ControllerBase
 {
     [HttpPost("Login")]
-    public async Task<ActionResult<Result<TokenDTO>>> LoginAsync([FromBody] LoginInputModel loginInputModel, CancellationToken cancellationToken)
+    public async Task<ActionResult<Result<TokenDTO>>> LoginAsync(LoginInputModel loginInputModel, CancellationToken cancellationToken)
     {
-        Result<TokenDTO> response = await authService.LoginAsync(loginInputModel, cancellationToken);
+		Result<TokenDTO> result = await authService.LoginAsync(loginInputModel, cancellationToken);
 
-        if (!response.IsSuccess)
-        {
-            return response.StatusCode.HasValue ? StatusCode((int)response.StatusCode.Value, response) : BadRequest(response);
-        }
-
-        return Ok(response);
+        return StatusCode((int)result.StatusCode, result);
     }
 }

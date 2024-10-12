@@ -22,7 +22,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Faluf.Trading.Infrastructure\Faluf.Trading.Infrastructure.csproj" />
-		<ProjectReference Include="..\..\Faluf.Trading.ServiceDefaults\Faluf.Trading.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\Faluf.Trading.Blazor.Client\Faluf.Trading.Blazor.Client.csproj" />
 	</ItemGroup>
 </Project>

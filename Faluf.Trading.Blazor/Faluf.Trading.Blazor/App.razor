@@ -12,13 +12,13 @@
     <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="app.css" />
     <link rel="stylesheet" href="Faluf.Trading.Blazor.styles.css" />
+    <ImportMap />
     <link rel="icon" type="image/png" href="favicon.png" />
-
-    <HeadOutlet @rendermode="InteractiveAuto" />
+    <HeadOutlet @rendermode="@PageRenderMode" />
 </head>
 
 <body>
-    <AppRoutes @rendermode="InteractiveAuto" />
+    <AppRoutes @rendermode="@PageRenderMode" />
 
     <script src="_framework/blazor.web.js"></script>
     <script>
@@ -34,6 +34,8 @@
 @code {
     [CascadingParameter]
     private HttpContext? HttpContext { get; set; }
+
+    private IComponentRenderMode? PageRenderMode => HttpContext?.AcceptsInteractiveRouting() ?? false ? InteractiveAuto : null;
 
     protected override void OnInitialized()
     {

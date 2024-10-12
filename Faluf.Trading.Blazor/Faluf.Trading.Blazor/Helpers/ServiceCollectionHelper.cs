@@ -57,8 +57,8 @@ public static class ServiceCollectionHelper
         // Localization
         builder.Services.AddLocalization();
 
-		// Validations
-		builder.Services.AddValidatorsFromAssembly(Assembly.Load("Faluf.Trading.Core"));
+        // Validations
+        builder.Services.AddValidatorsFromAssembly(Assembly.Load("Faluf.Trading.Core"));
 
         return builder;
     }
@@ -77,7 +77,7 @@ public static class ServiceCollectionHelper
     public static IServiceCollection AddTradingAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddCascadingAuthenticationState();
-        services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
+        services.AddScoped<AuthenticationStateProvider, RevalidatingAuthenticationStateProvider>();
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

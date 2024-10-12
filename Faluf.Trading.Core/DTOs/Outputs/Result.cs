@@ -5,7 +5,7 @@ namespace Faluf.Trading.Core.DTOs.Outputs;
 
 public class Result<T>
 {
-	public Result(bool isSuccess, string? errorMessage = null, Exception? exception = null, T? content = default, HttpStatusCode? statusCode = null, int recordCount = 0)
+	public Result(bool isSuccess, string? errorMessage = null, Exception? exception = null, T? content = default, HttpStatusCode statusCode = HttpStatusCode.OK, int recordCount = 0)
 	{
 		IsSuccess = isSuccess;
 		ErrorMessage = errorMessage;
@@ -34,7 +34,7 @@ public class Result<T>
 
 	public string? StackTrace { get; set; }
 
-	public HttpStatusCode? StatusCode { get; set; }
+	public HttpStatusCode StatusCode { get; set; }
 
     public static Result<TValue> Ok<TValue>(TValue content, int recordCount = 0) where TValue : T => new(true, content: content, recordCount: recordCount, statusCode: HttpStatusCode.OK);
 
@@ -44,9 +44,11 @@ public class Result<T>
 
     public static Result<TValue> Locked<TValue>(string errorMessage) where TValue : T => new(false, errorMessage: errorMessage, statusCode: HttpStatusCode.Locked);
 
-    //public static Result<TValue> NotFound<TValue>(string errorMessage) where TValue : T => new(false, errorMessage: errorMessage, statusCode: HttpStatusCode.NotFound);
+	//public static Result<TValue> NotFound<TValue>(string errorMessage) where TValue : T => new(false, errorMessage: errorMessage, statusCode: HttpStatusCode.NotFound);
 
-	//public static Result<TValue> BadRequest<TValue>(string errorMessage) where TValue : T => new(false, errorMessage: errorMessage, statusCode: HttpStatusCode.BadRequest);
+	public static Result<TValue> BadRequest<TValue>(string errorMessage) where TValue : T => new(false, errorMessage: errorMessage, statusCode: HttpStatusCode.BadRequest);
+
+	public static Result<TValue> BadRequest<TValue>(IEnumerable<string> errorMessages) where TValue : T => new(false, errorMessage: string.Join(Environment.NewLine, errorMessages), statusCode: HttpStatusCode.BadRequest);
 
 	public static Result<TValue> InternalServerError<TValue>(string errorMessage, Exception ex) where TValue : T => new(false, errorMessage: errorMessage, exception: ex, statusCode: HttpStatusCode.InternalServerError);
 }
@@ -56,7 +58,7 @@ public sealed class Result(
 	string? errorMessage = null,
 	Exception? exception = null,
 	object? content = default,
-	HttpStatusCode? statusCode = null,
+	HttpStatusCode statusCode = HttpStatusCode.OK,
 	int recordCount = 0)
 	: Result<object>(isSuccess, errorMessage, exception, content, statusCode, recordCount)
 {

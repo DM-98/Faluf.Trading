@@ -1,5 +1,7 @@
 ﻿@page "/login"
 
+@rendermode InteractiveAuto
+
 @inject IAuthService AuthService
 
 <h3>Login</h3>
@@ -11,14 +13,18 @@
 
 	<NotAuthorized>
 		<EditForm Model="@loginInputModel" OnValidSubmit="LoginAsync" Context="formContext">
+			<FluentValidationValidator />
+
 			<div>
 				<label for="email">Email:</label>
 				<InputText id="email" @bind-Value="@loginInputModel.Email" />
+				<ValidationMessage For="@(() => loginInputModel.Email)" />
 			</div>
 
 			<div>
 				<label for="password">Password:</label>
 				<InputText id="password" @bind-Value="@loginInputModel.Password" />
+				<ValidationMessage For="@(() => loginInputModel.Password)" />
 			</div>
 
 			<button type="submit">Login</button>
@@ -45,7 +51,7 @@
 	ReturnUrl:
 	@if (ReturnUrl is not null)
 	{
-		<a href="@ReturnUrl">Return</a>
+		<a href="@ReturnUrl">@ReturnUrl</a>
 	}
 	else
 	{

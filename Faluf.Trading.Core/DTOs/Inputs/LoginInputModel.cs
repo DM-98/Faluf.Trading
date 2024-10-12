@@ -1,6 +1,6 @@
 ﻿namespace Faluf.Trading.Core.DTOs.Inputs;
 
-public class LoginInputModel
+public sealed class LoginInputModel
 {
 	public string Email { get; set; } = null!;
 

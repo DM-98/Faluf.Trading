@@ -1,6 +1,4 @@
 ﻿using Faluf.Trading.Blazor.Client.Services;
-using Microsoft.AspNetCore.Components.Authorization;
-using Refit;
 
 namespace Faluf.Trading.Blazor.Client.Helpers;
 
@@ -10,14 +8,14 @@ public static class ServiceCollectionHelper
 	{
 		services.AddAuthorizationCore();
 		services.AddCascadingAuthenticationState();
-		services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
+		services.AddAuthenticationStateDeserialization();
 
 		return services;
 	}
 
 	public static IServiceCollection AddTradingServices(this IServiceCollection services)
 	{
-		services.AddRefitClient<IAuthService>().ConfigureHttpClient(c => c.BaseAddress = new Uri("https+http://blazor-rendermode-auto"));
+		services.AddHttpClient<IAuthService, HttpClientAuthService>(c => c.BaseAddress = new Uri("https://localhost:7235/"));
 
 		return services;
 	}

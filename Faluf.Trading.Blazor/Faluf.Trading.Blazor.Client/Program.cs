@@ -11,15 +11,15 @@ builder.Services.AddTradingServices();
 
 builder.Services.AddLocalization();
 
-var host = builder.Build();
+WebAssemblyHost host = builder.Build();
 
 const string defaultCulture = "en-US";
 
-var js = host.Services.GetRequiredService<IJSRuntime>();
-var result = await js.InvokeAsync<string>("blazorCulture.get");
-var culture = CultureInfo.GetCultureInfo(result ?? defaultCulture);
+IJSRuntime js = host.Services.GetRequiredService<IJSRuntime>();
+string result = await js.InvokeAsync<string>("blazorCulture.get");
+CultureInfo culture = CultureInfo.GetCultureInfo(result ?? defaultCulture);
 
-if (result == null)
+if (result is null)
 {
 	await js.InvokeVoidAsync("blazorCulture.set", defaultCulture);
 }

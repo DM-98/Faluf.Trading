@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Localization;
-
-namespace Faluf.Trading.Core.Validators;
+﻿namespace Faluf.Trading.Core.Validators;
 
 public sealed class LoginValidator : AbstractValidator<LoginInputModel>
 {
