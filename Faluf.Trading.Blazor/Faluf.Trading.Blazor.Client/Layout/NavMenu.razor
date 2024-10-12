@@ -31,6 +31,24 @@
         </div>
 
         <div class="nav-item px-3">
+            <NavLink class="nav-link" href="culture-server">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Culture (Server)
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="culture-client">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Culture (Client)
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="culture-example-2">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Culture Example 2
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
             <NavLink class="nav-link" href="auth">
                 <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Auth Required
             </NavLink>
@@ -43,24 +61,29 @@
                         <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
                     </NavLink>
                 </div>
+
                 <div class="nav-item px-3">
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
+
                         <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+
                         <button type="submit" class="nav-link">
                             <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
                         </button>
                     </form>
                 </div>
             </Authorized>
+
             <NotAuthorized>
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Register">
+                    <NavLink class="nav-link" href="register">
                         <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
                     </NavLink>
                 </div>
+
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Login">
+                    <NavLink class="nav-link" href="login">
                         <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
                     </NavLink>
                 </div>

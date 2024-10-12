@@ -1,11 +1,30 @@
-using Faluf.Trading.Blazor.Client.Services;
-using Microsoft.AspNetCore.Components.Authorization;
+using System.Globalization;
+using Faluf.Trading.Blazor.Client.Helpers;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.JSInterop;
 
 WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-builder.Services.AddAuthorizationCore();
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
+// Trading DI
+builder.Services.AddTradingAuthentication();
+builder.Services.AddTradingServices();
 
-await builder.Build().RunAsync().ConfigureAwait(false);
+builder.Services.AddLocalization();
+
+var host = builder.Build();
+
+const string defaultCulture = "en-US";
+
+var js = host.Services.GetRequiredService<IJSRuntime>();
+var result = await js.InvokeAsync<string>("blazorCulture.get");
+var culture = CultureInfo.GetCultureInfo(result ?? defaultCulture);
+
+if (result == null)
+{
+	await js.InvokeVoidAsync("blazorCulture.set", defaultCulture);
+}
+
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
+
+await host.RunAsync();

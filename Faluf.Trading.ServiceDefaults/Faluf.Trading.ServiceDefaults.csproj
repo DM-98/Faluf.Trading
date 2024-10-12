@@ -18,8 +18,4 @@
 		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Faluf.Trading.Core\Faluf.Trading.Core.csproj" />
-	</ItemGroup>
 </Project>

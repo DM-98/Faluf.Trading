@@ -1,19 +1,18 @@
-﻿using Faluf.Trading.Blazor.Services;
+﻿using System.Data;
+using System.Reflection;
+using System.Text;
+using Faluf.Trading.Blazor.Services;
 using Faluf.Trading.Core.Interfaces.Repositories;
 using Faluf.Trading.Infrastructure.Repositories;
 using Faluf.Trading.Infrastructure.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
-using System.Data;
-using System.Reflection;
-using System.Text;
 
 namespace Faluf.Trading.Blazor.Helpers;
 
@@ -21,9 +20,6 @@ public static class ServiceCollectionHelper
 {
     public static WebApplicationBuilder AddTradingCore(this WebApplicationBuilder builder)
     {
-        // Core
-        builder.Services.AddControllers();
-
         // Logging
         builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
         {
@@ -59,13 +55,10 @@ public static class ServiceCollectionHelper
         });
 
         // Localization
-        builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+        builder.Services.AddLocalization();
 
-        // Validations
-        builder.Services.AddValidatorsFromAssembly(Assembly.Load("Faluf.Trading.Core"));
-
-        // DataProtection
-        builder.Services.AddDataProtection().PersistKeysToDbContext<TradingDbContext>();
+		// Validations
+		builder.Services.AddValidatorsFromAssembly(Assembly.Load("Faluf.Trading.Core"));
 
         return builder;
     }

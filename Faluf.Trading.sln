@@ -14,8 +14,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faluf.Trading.Core", "Faluf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faluf.Trading.Infrastructure", "Faluf.Trading.Infrastructure\Faluf.Trading.Infrastructure.csproj", "{287694E9-8AA9-412B-83B8-C9D0C61FFADF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faluf.Trading.Localization", "Faluf.Trading.Localization\Faluf.Trading.Localization.csproj", "{4EF2DF60-80F5-4193-B346-5EC706135885}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,10 +44,6 @@ Global
 		{287694E9-8AA9-412B-83B8-C9D0C61FFADF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{287694E9-8AA9-412B-83B8-C9D0C61FFADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{287694E9-8AA9-412B-83B8-C9D0C61FFADF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4EF2DF60-80F5-4193-B346-5EC706135885}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4EF2DF60-80F5-4193-B346-5EC706135885}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4EF2DF60-80F5-4193-B346-5EC706135885}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4EF2DF60-80F5-4193-B346-5EC706135885}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

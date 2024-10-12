@@ -11,7 +11,7 @@ public static class EFCoreHelper
 	{
 		ParameterExpression parameter = Expression.Parameter(entityType.ClrType, "e");
 		MethodInfo propertyMethodInfo = typeof(EF).GetMethod("Property")?.MakeGenericMethod(typeof(DateTime?))!;
-		MethodCallExpression deletedAtProperty = Expression.Call(propertyMethodInfo, parameter, Expression.Constant("DeletedAt"));
+		MethodCallExpression deletedAtProperty = Expression.Call(propertyMethodInfo, parameter, Expression.Constant("DeletedAtUTC"));
 		BinaryExpression compareExpression = Expression.MakeBinary(ExpressionType.Equal, deletedAtProperty, Expression.Constant(null, typeof(DateTime?)));
 		LambdaExpression lambda = Expression.Lambda(compareExpression, parameter);
 

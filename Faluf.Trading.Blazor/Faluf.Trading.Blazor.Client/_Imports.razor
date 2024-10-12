@@ -10,7 +10,11 @@
 @using Faluf.Trading.Blazor.Client
 @using Microsoft.AspNetCore.Authorization
 @using Faluf.Trading.Blazor.Client.Layout
-@using Faluf.Trading.Core.DTOs.Inputs
+@using Blazored.FluentValidation
+@using Faluf.Trading.Blazor.Client.Components
 @using Faluf.Trading.Core.Enums
-@using Faluf.Trading.Core.Interfaces.Services
-@using Faluf.Trading.Core.DTOs.Outputs
+@using System.Globalization
+@using Microsoft.Extensions.Localization
+@using Faluf.Trading.Blazor.Client.Localization
+
+@inject IStringLocalizer<SharedResource> SharedLocalizer

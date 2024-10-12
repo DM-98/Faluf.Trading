@@ -19,6 +19,5 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Faluf.Trading.Core\Faluf.Trading.Core.csproj" />
-		<ProjectReference Include="..\Faluf.Trading.Localization\Faluf.Trading.Localization.csproj" />
 	</ItemGroup>
 </Project>

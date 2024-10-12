@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Faluf.Trading.Localization.Resources {
+namespace Faluf.Trading.Blazor.Client.Localization {
     using System;
     
     
@@ -22,24 +22,24 @@ namespace Faluf.Trading.Localization.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class SharedResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal SharedResource() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Faluf.Trading.Localization.Resources.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Faluf.Trading.Blazor.Client.Localization.SharedResource", typeof(SharedResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace Faluf.Trading.Localization.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,29 +61,11 @@ namespace Faluf.Trading.Localization.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} was not found.
+        ///   Looks up a localized string similar to Hello.
         /// </summary>
-        internal static string EntityNotFound {
+        public static string Greeting {
             get {
-                return ResourceManager.GetString("EntityNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An unhandled error has occurred.
-        /// </summary>
-        internal static string UnhandledError {
-            get {
-                return ResourceManager.GetString("UnhandledError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User.
-        /// </summary>
-        internal static string User {
-            get {
-                return ResourceManager.GetString("User", resourceCulture);
+                return ResourceManager.GetString("Greeting", resourceCulture);
             }
         }
     }

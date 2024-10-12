@@ -14,6 +14,4 @@ public sealed class RefreshToken : BaseEntity
     public DateTimeOffset ExpiresAtUTC { get; set; }
 
     public DateTimeOffset? RevokedAtUTC { get; set; }
-
-    public string? ReplacedByToken { get; set; }
 }

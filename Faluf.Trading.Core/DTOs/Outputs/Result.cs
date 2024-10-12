@@ -60,12 +60,11 @@ public sealed class Result(
 	int recordCount = 0)
 	: Result<object>(isSuccess, errorMessage, exception, content, statusCode, recordCount)
 {
-    public static Result Ok() => new(true, statusCode: HttpStatusCode.OK);
+	public static Result Ok() => new(true, statusCode: HttpStatusCode.OK);
 
     public static Result NotFound(string errorMessage) => new(false, errorMessage: errorMessage, statusCode: HttpStatusCode.NotFound);
 
     public static Result Unauthorized(string errorMessage) => new(false, errorMessage: errorMessage, statusCode: HttpStatusCode.Unauthorized);
 
     public static Result InternalServerError(string errorMessage, Exception ex) => new(false, errorMessage: errorMessage, exception: ex, statusCode: HttpStatusCode.InternalServerError);
-
 }

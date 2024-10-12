@@ -1,0 +1,51 @@
+﻿@page "/register"
+
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+
+<h3>Register</h3>
+
+<AuthorizeView>
+    <Authorized>
+        <p>You are already logged in.</p>
+    </Authorized>
+
+    <NotAuthorized>
+        <EditForm Model="@registerInputModel" OnValidSubmit="RegisterAsync" Context="formContext">
+            <FluentValidationValidator />
+
+            <div>
+                <label for="email">Email:</label>
+                <InputText id="email" @bind-Value="@registerInputModel.Email" />
+            </div>
+
+            <div>
+                <label for="password">Password:</label>
+                <InputText id="password" @bind-Value="@registerInputModel.Password" type="password" />
+            </div>
+
+            <div>
+                <label for="password">Password:</label>
+                <InputText id="password" @bind-Value="@registerInputModel.ConfirmPassword" type="password" />
+            </div>
+
+            <button type="submit">Login</button>
+        </EditForm>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private RegisterInputModel registerInputModel = new();
+
+    private async Task RegisterAsync()
+    {
+        Result<User> registerResult = await UserService.RegisterAsync(registerInputModel);
+
+        if (!registerResult.IsSuccess)
+        {
+            return;
+        }
+
+        NavigationManager.NavigateTo("/login");
+    }
+}
