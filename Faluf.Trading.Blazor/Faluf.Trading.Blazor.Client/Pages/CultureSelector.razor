@@ -18,8 +18,7 @@
     </label>
 </p>
 
-@code
-{
+@code {
     private Dictionary<string, string> cultureDict =
         new()
             {
@@ -46,8 +45,7 @@
         {
             await JS.InvokeVoidAsync("blazorCulture.set", selectedCulture!.Name);
 
-            var uri = new Uri(Navigation.Uri)
-                .GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+            var uri = new Uri(Navigation.Uri).GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
             var cultureEscaped = Uri.EscapeDataString(selectedCulture.Name);
             var uriEscaped = Uri.EscapeDataString(uri);
 
