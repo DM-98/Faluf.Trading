@@ -1,53 +1,58 @@
 ﻿@page "/register"
 
-@rendermode InteractiveAuto
-
 @inject NavigationManager NavigationManager
 @inject IUserService UserService
 
 <h3>Register</h3>
 
-<AuthorizeView>
-    <Authorized>
-        <p>You are already logged in.</p>
-    </Authorized>
+<EditForm Model="@registerInputModel" OnValidSubmit="RegisterAsync" Context="formContext">
+	<FluentValidationValidator />
 
-    <NotAuthorized>
-        <EditForm Model="@registerInputModel" OnValidSubmit="RegisterAsync" Context="formContext">
-            <FluentValidationValidator />
+	<div>
+		<label for="email">First name:</label>
+		<InputText id="email" @bind-Value="@registerInputModel.FirstName" />
+		<ValidationMessage For="@(() => registerInputModel.FirstName)" />
+	</div>
 
-            <div>
-                <label for="email">Email:</label>
-                <InputText id="email" @bind-Value="@registerInputModel.Email" />
-            </div>
+	<div>
+		<label for="email">Last name:</label>
+		<InputText id="email" @bind-Value="@registerInputModel.LastName" />
+		<ValidationMessage For="@(() => registerInputModel.LastName)" />
+	</div>
 
-            <div>
-                <label for="password">Password:</label>
-                <InputText id="password" @bind-Value="@registerInputModel.Password" type="password" />
-            </div>
+	<div>
+		<label for="email">Email:</label>
+		<InputText id="email" @bind-Value="@registerInputModel.Email" />
+		<ValidationMessage For="@(() => registerInputModel.Email)" />
+	</div>
 
-            <div>
-                <label for="password">Password:</label>
-                <InputText id="password" @bind-Value="@registerInputModel.ConfirmPassword" type="password" />
-            </div>
+	<div>
+		<label for="password">Password:</label>
+		<InputText id="password" @bind-Value="@registerInputModel.Password" />
+		<ValidationMessage For="@(() => registerInputModel.Password)" />
+	</div>
 
-            <button type="submit">Login</button>
-        </EditForm>
-    </NotAuthorized>
-</AuthorizeView>
+	<div>
+		<label for="password">Confirm password:</label>
+		<InputText id="password" @bind-Value="@registerInputModel.ConfirmPassword" />
+		<ValidationMessage For="@(() => registerInputModel.ConfirmPassword)" />
+	</div>
+
+	<button type="submit">Register</button>
+</EditForm>
 
 @code {
-    private RegisterInputModel registerInputModel = new();
+	private RegisterInputModel registerInputModel = new();
 
-    private async Task RegisterAsync()
-    {
-        Result<User> registerResult = await UserService.RegisterAsync(registerInputModel);
+	private async Task RegisterAsync()
+	{
+		Result<User> registerResult = await UserService.RegisterAsync(registerInputModel);
 
-        if (!registerResult.IsSuccess)
-        {
-            return;
-        }
+		if (!registerResult.IsSuccess)
+		{
+			return;
+		}
 
-        NavigationManager.NavigateTo("/login");
-    }
+		NavigationManager.NavigateTo("/login");
+	}
 }

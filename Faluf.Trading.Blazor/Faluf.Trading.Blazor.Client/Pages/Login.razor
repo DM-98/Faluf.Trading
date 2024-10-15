@@ -1,7 +1,5 @@
 ﻿@page "/login"
 
-@rendermode InteractiveAuto
-
 @inject IAuthService AuthService
 
 <h3>Login</h3>
@@ -9,6 +7,8 @@
 <AuthorizeView>
 	<Authorized>
 		<p>You are already logged in.</p>
+
+		<a href="/">@SharedLocalizer["GoHome"]</a>
 	</Authorized>
 
 	<NotAuthorized>
@@ -68,6 +68,6 @@
 
 	private async Task LoginAsync()
 	{
-		tokenDTO = await AuthService.LoginAsync(loginInputModel);
+		Result<TokenDTO> result = await AuthService.LoginAsync(loginInputModel);
 	}
 }

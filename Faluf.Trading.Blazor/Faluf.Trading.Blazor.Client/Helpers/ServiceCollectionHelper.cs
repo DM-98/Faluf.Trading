@@ -15,7 +15,10 @@ public static class ServiceCollectionHelper
 
 	public static IServiceCollection AddTradingServices(this IServiceCollection services)
 	{
-		services.AddHttpClient<IAuthService, HttpClientAuthService>(c => c.BaseAddress = new Uri("https://localhost:7235/"));
+		static void APIClient(HttpClient client) => client.BaseAddress = new(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? "https://localhost:7235/" : "TODO"); // TODO
+		
+		services.AddHttpClient<IAuthService, HttpClientAuthService>(APIClient);
+		services.AddHttpClient<IUserService, HttpClientUserService>(APIClient);
 
 		return services;
 	}

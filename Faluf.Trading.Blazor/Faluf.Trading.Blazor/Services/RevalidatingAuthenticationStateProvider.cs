@@ -9,27 +9,30 @@ namespace Faluf.Trading.Blazor.Services;
 // every 30 minutes an interactive circuit is connected.
 public sealed class RevalidatingAuthenticationStateProvider(ILoggerFactory loggerFactory, IServiceScopeFactory serviceScopeFactory) : RevalidatingServerAuthenticationStateProvider(loggerFactory)
 {
-	protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(30);
+	protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(5);
 
 	protected override async Task<bool> ValidateAuthenticationStateAsync(AuthenticationState authenticationState, CancellationToken cancellationToken)
 	{
 		await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
 		IAuthService authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
 
-		return await ValidateRefreshTokenAsync(authService, authenticationState.User);
-	}
+		// Check the access token expiry
+		DateTimeOffset? accessTokenExpiry = authenticationState.User.FindFirstValue("exp") is { } expiry ? DateTimeOffset.Parse(expiry) : null;
 
-	private static async Task<bool> ValidateRefreshTokenAsync(IAuthService authService, ClaimsPrincipal principal)
-	{
-        string? jti = principal.FindFirstValue(JwtRegisteredClaimNames.Jti);
-
-        if (string.IsNullOrWhiteSpace(jti))
+		if (accessTokenExpiry is null || accessTokenExpiry < DateTimeOffset.Now)
 		{
-			return false;
+			string? jti = authenticationState.User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+
+			if (string.IsNullOrWhiteSpace(jti))
+			{
+				return false;
+			}
+
+			Result refreshTokenResult = await authService.ValidateRefreshTokenAsync(jti, cancellationToken);
+
+			return refreshTokenResult.IsSuccess;
 		}
 
-		Result refreshTokenResult = await authService.ValidateRefreshTokenAsync(jti, cancellationToken: CancellationToken.None);
-
-        return refreshTokenResult.IsSuccess;
+		return true;
 	}
 }

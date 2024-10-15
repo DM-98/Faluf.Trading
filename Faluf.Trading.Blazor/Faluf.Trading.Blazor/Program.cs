@@ -16,8 +16,8 @@ builder.Services.AddTradingRepositories();
 builder.Services.AddTradingServices();
 
 builder.Services.AddOpenApi();
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 WebApplication app = builder.Build();
 
