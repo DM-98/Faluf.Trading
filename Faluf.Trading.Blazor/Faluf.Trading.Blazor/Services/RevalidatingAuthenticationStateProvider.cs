@@ -19,7 +19,7 @@ public sealed class RevalidatingAuthenticationStateProvider(ILoggerFactory logge
 		// Check the access token expiry
 		DateTimeOffset? accessTokenExpiry = authenticationState.User.FindFirstValue("exp") is { } expiry ? DateTimeOffset.Parse(expiry) : null;
 
-		if (accessTokenExpiry is null || accessTokenExpiry < DateTimeOffset.Now)
+		if (accessTokenExpiry is null || accessTokenExpiry < DateTimeOffset.UtcNow)
 		{
 			string? jti = authenticationState.User.FindFirstValue(JwtRegisteredClaimNames.Jti);
 
