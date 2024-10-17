@@ -1,6 +1,9 @@
 ﻿@page "/login"
 
 @inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Login</PageTitle>
 
 <h3>Login</h3>
 
@@ -27,24 +30,21 @@
 				<ValidationMessage For="@(() => loginInputModel.Password)" />
 			</div>
 
+			<div>
+				<label for="rememberMe">Remember me:</label>
+				<input type="checkbox" id="rememberMe" @bind="@loginInputModel.IsRememberMeChecked" />
+			</div>
+
 			<button type="submit">Login</button>
 		</EditForm>
 	</NotAuthorized>
 </AuthorizeView>
 
-@if (tokenDTO is not null)
+@if (errorMessage is not null)
 {
-	<p>ErrorMessage: @tokenDTO.ErrorMessage</p>
-	<p>ExceptionMessage: @tokenDTO.ExceptionMessage</p>
-	<p>InnerExceptionMessage: @tokenDTO.InnerExceptionMessage</p>
-	<p>StackTrace: @tokenDTO.StackTrace</p>
-	<p>HttpCode: @tokenDTO.StatusCode.ToString()</p>
-
-	@if (tokenDTO.IsSuccess)
-	{
-		<p>AccessToken: @tokenDTO.Content.AccessToken</p>
-		<p>RefreshToken: @tokenDTO.Content.RefreshToken</p>
-	}
+	<p>
+		<span>@errorMessage</span>
+	</p>
 }
 
 <p>
@@ -63,11 +63,20 @@
 	[Parameter, SupplyParameterFromQuery]
 	public string? ReturnUrl { get; set; }
 
-	private LoginInputModel loginInputModel = new() { ClientType = ClientType.Blazor };
-	private Result<TokenDTO>? tokenDTO;
+	private LoginInputModel loginInputModel = new() { Email = "dmm@l-mediehus.dk", Password = "Dug91066", ClientType = ClientType.Blazor };
+	private string? errorMessage;
 
 	private async Task LoginAsync()
 	{
-		Result<TokenDTO> result = await AuthService.LoginAsync(loginInputModel);
+		Result<TokenDTO> loginResult = await AuthService.LoginAsync(loginInputModel);
+
+		if (!loginResult.IsSuccess)
+		{
+			errorMessage = loginResult.ErrorMessage + " " + loginResult.ExceptionMessage + " " + loginResult.InnerExceptionMessage + " " + loginResult.StackTrace;
+
+			return;
+		}
+
+		NavigationManager.NavigateTo("/", true);
 	}
 }

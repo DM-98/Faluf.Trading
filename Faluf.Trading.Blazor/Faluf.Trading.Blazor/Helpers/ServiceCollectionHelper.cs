@@ -23,7 +23,9 @@ public static class ServiceCollectionHelper
         // Logging
         builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
         {
-            loggerConfiguration.WriteTo.Console(LogEventLevel.Information);
+            loggerConfiguration.MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning);
+
+			loggerConfiguration.WriteTo.Console(LogEventLevel.Information);
 
             loggerConfiguration.WriteTo.MSSqlServer(
                 connectionString: builder.Configuration.GetConnectionString("TradingConnection")!,
@@ -54,8 +56,8 @@ public static class ServiceCollectionHelper
             });
         });
 
-        // Localization
-        builder.Services.AddLocalization();
+		// Localization
+		builder.Services.AddLocalization();
 
         // Validations
         builder.Services.AddValidatorsFromAssembly(Assembly.Load("Faluf.Trading.Core"));

@@ -5,7 +5,7 @@ namespace Faluf.Trading.Core.Abstractions.Models;
 public abstract class BaseEntity : ISoftDeletable
 {
 	[Key]
-	public Guid Id { get; set; } = Guid.NewGuid();
+	public Guid Id { get; set; }
 
 	public DateTime CreatedAtUTC { get; set; } = DateTime.UtcNow;
 

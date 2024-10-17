@@ -4,6 +4,7 @@ using Faluf.Trading.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Faluf.Trading.Infrastructure.Migrations
 {
     [DbContext(typeof(TradingDbContext))]
-    partial class TradingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241016215403_LoginFromInRefreshToken")]
+    partial class LoginFromInRefreshToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,15 +77,15 @@ namespace Faluf.Trading.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("ExpiresAtUTC")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("HashedToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("LoginFrom")
                         .HasColumnType("int");
 
                     b.Property<DateTimeOffset?>("RevokedAtUTC")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAtUTC")
                         .HasColumnType("datetime2");

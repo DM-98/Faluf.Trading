@@ -8,21 +8,21 @@ public sealed class RefreshTokenRepository(IDbContextFactory<TradingDbContext> d
     {
         await using TradingDbContext context = await DbContextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
 
-        return await context.RefreshTokens.AsTracking().FirstOrDefaultAsync(x => x.HashedToken == refreshToken, cancellationToken).ConfigureAwait(false);
+        return await context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<RefreshToken>> GetRefreshTokensByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         await using TradingDbContext context = await DbContextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
 
-        return await context.RefreshTokens.AsTracking().Where(x => x.UserId == userId).ToListAsync(cancellationToken).ConfigureAwait(false);
+        return await context.RefreshTokens.Where(x => x.UserId == userId).ToListAsync(cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<bool> IsRefreshTokenBlacklistedAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
         await using TradingDbContext context = await DbContextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
 
-        return await context.RefreshTokens.AnyAsync(x => x.HashedToken == refreshToken && x.RevokedAtUTC != null, cancellationToken).ConfigureAwait(false);
+        return await context.RefreshTokens.AnyAsync(x => x.Token == refreshToken && x.RevokedAtUTC != null, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task UpdateRangeAsync(IEnumerable<RefreshToken> refreshTokens, CancellationToken cancellationToken)

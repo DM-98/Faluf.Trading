@@ -8,4 +8,19 @@
 
 <AuthorizeView>
     Hello @context.User.Identity?.Name!
+
+	@(string.Join(", ", context.User.Claims.Select(c => new { c.Type, c.Value }).Select(x => $"[{x.Type}: {x.Value}]")))
+
+	@if (context.User.IsInRole("Admin"))
+	{
+		<p>You are an admin.</p>
+	}
+	else if (context.User.IsInRole("User"))
+	{
+		<p>You are a user.</p>
+	}
+	else
+	{
+		<p>You are not an admin or a user.</p>
+	}
 </AuthorizeView>

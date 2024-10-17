@@ -7,6 +7,4 @@ public interface IUserRepository : IBaseRepository<User>
     Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
 
     Task<DateTimeOffset?> GetLockoutEndDateAsync(User user, CancellationToken cancellationToken = default);
-
-    Task<int> IncrementAccessFailedCountAsync(User user, CancellationToken cancellationToken = default);
 }

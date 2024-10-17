@@ -1,34 +1,24 @@
 ﻿using System.Net.Http.Json;
 using Microsoft.Extensions.Localization;
+using Microsoft.JSInterop;
 
 namespace Faluf.Trading.Blazor.Client.Services;
 
-public sealed class HttpClientAuthService(HttpClient httpClient, IStringLocalizer<HttpClientAuthService> stringLocalizer) : IAuthService
+public sealed class ClientAuthService(IJSRuntime jsRuntime, HttpClient httpClient, IStringLocalizer<ClientAuthService> stringLocalizer) : IAuthService
 {
 	public async Task<Result<TokenDTO>> LoginAsync(LoginInputModel loginInputModel, CancellationToken cancellationToken = default)
 	{
 		HttpResponseMessage response = await httpClient.PostAsJsonAsync("api/Auth/Login", loginInputModel, cancellationToken);
+		Result<TokenDTO>? loginResult = await response.Content.ReadFromJsonAsync<Result<TokenDTO>>(cancellationToken);
 
-		if (!response.IsSuccessStatusCode)
-		{
-			Result<TokenDTO>? failedResult = await response.Content.ReadFromJsonAsync<Result<TokenDTO>>(cancellationToken);
-
-			if (failedResult is not null)
-			{
-				return failedResult;
-			}
-
-			return Result.BadRequest<TokenDTO>(stringLocalizer["BadRequest"]);
-		}
-
-		TokenDTO? tokenDTO = await response.Content.ReadFromJsonAsync<TokenDTO>(cancellationToken);
-
-		if (tokenDTO is null)
+		if (loginResult is null or { IsSuccess: false })
 		{
 			return Result.BadRequest<TokenDTO>(stringLocalizer["BadRequest"]);
 		}
 
-		return Result.Ok(tokenDTO);
+		await jsRuntime.InvokeVoidAsync("localStorage.setItem", "accessToken", loginResult.Content.AccessToken);
+
+		return loginResult;
 	}
 
 	public Task<Result<TokenDTO>> RefreshTokensAsync(TokenDTO tokenDTO, CancellationToken cancellationToken = default)

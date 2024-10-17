@@ -1,4 +1,5 @@
 using System.Globalization;
+using BitzArt.Blazor.Cookies;
 using Faluf.Trading.Blazor.Client.Helpers;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.JSInterop;
@@ -10,7 +11,7 @@ builder.Services.AddTradingAuthentication();
 builder.Services.AddTradingServices();
 
 builder.Services.AddLocalization();
-
+builder.AddBlazorCookies();
 WebAssemblyHost host = builder.Build();
 
 const string defaultCulture = "en-US";

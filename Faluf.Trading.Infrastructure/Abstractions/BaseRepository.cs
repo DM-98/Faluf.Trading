@@ -6,11 +6,20 @@ public abstract class BaseRepository<T, TDbContext>(IDbContextFactory<TDbContext
 {
 	protected IDbContextFactory<TDbContext> DbContextFactory { get; } = dbContextFactory; // https://www.benday.com/2024/07/18/how-to-fix-c-primary-constructor-warning-cs9107-parameter-is-captured-into-the-state-of-the-enclosing-type/
 
-	public async Task<T> CreateAsync(T entity, CancellationToken cancellationToken = default)
+	public async Task<T> UpsertAsync(T entity, CancellationToken cancellationToken = default)
 	{
 		await using TDbContext context = await DbContextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
 
-		await context.Set<T>().AddAsync(entity, cancellationToken).ConfigureAwait(false);
+		if (entity.Id == Guid.Empty)
+		{
+			await context.Set<T>().AddAsync(entity, cancellationToken).ConfigureAwait(false);
+		}
+		else
+		{
+			entity.UpdatedAtUTC = DateTime.UtcNow;
+			context.Set<T>().Entry(entity).State = EntityState.Modified;
+		}
+
 		await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
 		return entity;
@@ -28,16 +37,5 @@ public abstract class BaseRepository<T, TDbContext>(IDbContextFactory<TDbContext
 		{
 			await context.Set<T>().Where(x => x.Id == id).ExecuteDeleteAsync(cancellationToken).ConfigureAwait(false);
 		}
-	}
-
-	public async Task<T> UpdateAsync(T entity, CancellationToken cancellationToken = default)
-	{
-		await using TDbContext context = await DbContextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
-
-		entity.UpdatedAtUTC = DateTime.UtcNow;
-
-		await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-		return entity;
 	}
 }

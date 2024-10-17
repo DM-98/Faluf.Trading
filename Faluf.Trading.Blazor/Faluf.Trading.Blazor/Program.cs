@@ -1,10 +1,11 @@
+using BitzArt.Blazor.Cookies;
 using Faluf.Trading.Blazor.Helpers;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddInteractiveWebAssemblyComponents().AddAuthenticationStateSerialization();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddInteractiveWebAssemblyComponents().AddAuthenticationStateSerialization(options => options.SerializeAllClaims = true);
 builder.Services.AddControllers();
 builder.Services.AddDataProtection().PersistKeysToDbContext<TradingDbContext>();
 
@@ -18,6 +19,7 @@ builder.Services.AddTradingServices();
 builder.Services.AddOpenApi();
 builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.AddBlazorCookies();
 
 WebApplication app = builder.Build();
 

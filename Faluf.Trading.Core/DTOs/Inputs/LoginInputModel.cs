@@ -6,5 +6,7 @@ public sealed class LoginInputModel
 
 	public string Password { get; set; } = null!;
 
-    public required ClientType ClientType { get; set; }
+	public bool IsRememberMeChecked { get; set; }
+
+	public required ClientType ClientType { get; set; }
 }

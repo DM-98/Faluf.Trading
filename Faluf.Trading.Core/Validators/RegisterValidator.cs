@@ -20,6 +20,8 @@ public sealed class RegisterValidator : AbstractValidator<RegisterInputModel>
 			.NotEmpty()
 			.WithMessage(stringLocalizer["PasswordRequired"]);
 		RuleFor(x => x.ConfirmPassword)
+			.NotEmpty()
+			.WithMessage(stringLocalizer["ConfirmPasswordRequired"])
 			.Equal(x => x.Password)
 			.WithMessage(stringLocalizer["PasswordsDoNotMatch"]);
 	}

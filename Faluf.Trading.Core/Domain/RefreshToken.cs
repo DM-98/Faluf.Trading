@@ -9,9 +9,11 @@ public sealed class RefreshToken : BaseEntity
     [ForeignKey(nameof(UserId))]
     public User User { get; set; } = default!;
 
-    public string HashedToken { get; set; } = default!;
+    public string Token { get; set; } = default!;
 
     public DateTimeOffset ExpiresAtUTC { get; set; }
 
     public DateTimeOffset? RevokedAtUTC { get; set; }
+
+	public ClientType LoginFrom { get; set; }
 }

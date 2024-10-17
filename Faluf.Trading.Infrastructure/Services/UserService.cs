@@ -13,7 +13,7 @@ public sealed class UserService(IUserRepository userRepository, IStringLocalizer
             user.HashedPassword = BCryptNext.HashPassword(registerInputModel.Password);
             user.Roles = ["User"];
 
-            User createdUser = await userRepository.CreateAsync(user, cancellationToken).ConfigureAwait(false);
+            User createdUser = await userRepository.UpsertAsync(user, cancellationToken).ConfigureAwait(false);
 
             return Result.Created(createdUser);
         }

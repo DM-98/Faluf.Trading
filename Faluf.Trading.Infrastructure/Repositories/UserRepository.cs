@@ -29,7 +29,7 @@ public sealed class UserRepository(IDbContextFactory<TradingDbContext> dbContext
     {
         await using TradingDbContext context = await DbContextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
 
-        return await context.Users.AsTracking().FirstOrDefaultAsync(x => x.Email == email, cancellationToken).ConfigureAwait(false);
+        return await context.Users.FirstOrDefaultAsync(x => x.Email == email, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<DateTimeOffset?> GetLockoutEndDateAsync(User user, CancellationToken cancellationToken = default)
@@ -37,16 +37,5 @@ public sealed class UserRepository(IDbContextFactory<TradingDbContext> dbContext
         await using TradingDbContext context = await DbContextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
 
         return await context.Users.Where(x => x.Id == user.Id).Select(x => x.LockoutEndUTC).FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<int> IncrementAccessFailedCountAsync(User user, CancellationToken cancellationToken = default)
-    {
-        await using TradingDbContext context = await DbContextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
-
-        int newAccessFailedCount = user.AccessFailedCount + 1;
-
-        await context.Users.Where(x => x.Id == user.Id).ExecuteUpdateAsync(x => x.SetProperty(y => y.AccessFailedCount, newAccessFailedCount), cancellationToken).ConfigureAwait(false);
-
-        return newAccessFailedCount;
     }
 }
