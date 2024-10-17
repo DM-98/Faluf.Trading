@@ -74,13 +74,13 @@ public sealed class AuthService(ICookieService cookieService, AuthenticationStat
 				claims.Add(new(ClaimTypes.Role, role));
 			}
 
-			RefreshToken? currentRefreshToken = await refreshTokenRepository.GetByRefreshTokenAsync(jti, cancellationToken);
+			RefreshToken? currentRefreshToken = await refreshTokenRepository.GetByUserIdAndClientTypeAsync(user.Id, loginInputModel.ClientType, cancellationToken);
 
 			currentRefreshToken ??= new();
 			currentRefreshToken.UserId = user.Id;
 			currentRefreshToken.Token = jti;
 			currentRefreshToken.ExpiresAtUTC = DateTime.UtcNow.AddDays(refreshTokenExpiryInDays);
-			currentRefreshToken.LoginFrom = loginInputModel.ClientType;
+			currentRefreshToken.ClientType = loginInputModel.ClientType;
 
 			await refreshTokenRepository.UpsertAsync(currentRefreshToken, cancellationToken).ConfigureAwait(false);
 
@@ -118,7 +118,7 @@ public sealed class AuthService(ICookieService cookieService, AuthenticationStat
 
 			RefreshToken? refreshToken = await refreshTokenRepository.GetByRefreshTokenAsync(tokenDTO.RefreshToken, cancellationToken).ConfigureAwait(false);
 
-			if (refreshToken is null || refreshToken.RevokedAtUTC > DateTimeOffset.UtcNow)
+			if (refreshToken is null || refreshToken.LockoutEndUTC > DateTimeOffset.UtcNow || refreshToken.ExpiresAtUTC < DateTimeOffset.UtcNow)
 			{
 				return Result.Unauthorized<TokenDTO>(stringLocalizer["Unauthorized"]);
 			}
@@ -185,7 +185,7 @@ public sealed class AuthService(ICookieService cookieService, AuthenticationStat
 			if (refreshTokenEntity is null
 				|| !BCryptNext.Verify(refreshToken, refreshTokenEntity.Token)
 				|| refreshTokenEntity.ExpiresAtUTC < DateTimeOffset.UtcNow
-				|| refreshTokenEntity.RevokedAtUTC < DateTimeOffset.UtcNow)
+				|| refreshTokenEntity.LockoutEndUTC < DateTimeOffset.UtcNow)
 			{
 				return Result.Unauthorized(stringLocalizer["Unauthorized"]);
 			}
@@ -211,7 +211,7 @@ public sealed class AuthService(ICookieService cookieService, AuthenticationStat
 				return Result.NotFound(stringLocalizer["NotFound", "RefreshToken"]);
 			}
 
-			refreshTokenEntity.RevokedAtUTC = DateTime.UtcNow;
+			refreshTokenEntity.LockoutEndUTC = DateTime.UtcNow;
 
 			await refreshTokenRepository.UpsertAsync(refreshTokenEntity, cancellationToken).ConfigureAwait(false);
 
@@ -233,7 +233,7 @@ public sealed class AuthService(ICookieService cookieService, AuthenticationStat
 
 			foreach (RefreshToken refreshToken in refreshTokens)
 			{
-				refreshToken.RevokedAtUTC = DateTime.UtcNow;
+				refreshToken.LockoutEndUTC = DateTime.UtcNow;
 			}
 
 			await refreshTokenRepository.UpdateRangeAsync(refreshTokens, cancellationToken).ConfigureAwait(false);

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Faluf.Trading.Core.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Faluf.Trading.Infrastructure.Repositories;
 
@@ -11,7 +12,14 @@ public sealed class RefreshTokenRepository(IDbContextFactory<TradingDbContext> d
         return await context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<RefreshToken>> GetRefreshTokensByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+	public async Task<RefreshToken?> GetByUserIdAndClientTypeAsync(Guid id, ClientType clientType, CancellationToken cancellationToken = default)
+	{
+		await using TradingDbContext context = await DbContextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
+
+		return await context.RefreshTokens.FirstOrDefaultAsync(x => x.UserId == id && x.ClientType == clientType, cancellationToken).ConfigureAwait(false);
+	}
+
+	public async Task<IEnumerable<RefreshToken>> GetRefreshTokensByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         await using TradingDbContext context = await DbContextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
 
@@ -22,7 +30,7 @@ public sealed class RefreshTokenRepository(IDbContextFactory<TradingDbContext> d
     {
         await using TradingDbContext context = await DbContextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
 
-        return await context.RefreshTokens.AnyAsync(x => x.Token == refreshToken && x.RevokedAtUTC != null, cancellationToken).ConfigureAwait(false);
+        return await context.RefreshTokens.AnyAsync(x => x.Token == refreshToken && x.LockoutEndUTC != null, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task UpdateRangeAsync(IEnumerable<RefreshToken> refreshTokens, CancellationToken cancellationToken)

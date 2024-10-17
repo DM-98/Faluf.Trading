@@ -7,6 +7,7 @@ using Faluf.Trading.Infrastructure.Repositories;
 using Faluf.Trading.Infrastructure.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -80,7 +81,8 @@ public static class ServiceCollectionHelper
     {
         services.AddCascadingAuthenticationState();
         services.AddScoped<AuthenticationStateProvider, RevalidatingAuthenticationStateProvider>();
-        services.AddAuthentication(options =>
+		services.AddSingleton<IAuthorizationMiddlewareResultHandler, BlazorAuthorizationMiddlewareResultHandler>();
+		services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

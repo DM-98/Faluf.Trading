@@ -13,7 +13,7 @@ public sealed class RefreshToken : BaseEntity
 
     public DateTimeOffset ExpiresAtUTC { get; set; }
 
-    public DateTimeOffset? RevokedAtUTC { get; set; }
+    public DateTimeOffset? LockoutEndUTC { get; set; }
 
-	public ClientType LoginFrom { get; set; }
+	public ClientType ClientType { get; set; }
 }
