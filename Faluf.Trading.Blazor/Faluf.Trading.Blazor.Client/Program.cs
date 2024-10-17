@@ -6,12 +6,11 @@ using Microsoft.JSInterop;
 
 WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-// Trading DI
+builder.AddBlazorCookies();
 builder.Services.AddTradingAuthentication();
 builder.Services.AddTradingServices();
-
 builder.Services.AddLocalization();
-builder.AddBlazorCookies();
+
 WebAssemblyHost host = builder.Build();
 
 const string defaultCulture = "en-US";

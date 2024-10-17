@@ -1,5 +1,6 @@
 using BitzArt.Blazor.Cookies;
 using Faluf.Trading.Blazor.Helpers;
+using Faluf.Trading.Blazor.Middlewares;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,6 +47,8 @@ app.UseAntiforgery();
 
 string[] supportedCultures = ["en-US", "da-DK"];
 app.UseRequestLocalization(new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0]).AddSupportedCultures(supportedCultures).AddSupportedUICultures(supportedCultures));
+
+app.UseJWTAuthorizationMiddleware();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode().AddInteractiveWebAssemblyRenderMode().AddAdditionalAssemblies(typeof(Faluf.Trading.Blazor.Client._Imports).Assembly);
