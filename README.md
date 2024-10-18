@@ -3,7 +3,7 @@
 A hobby project with focus on:
 - .NET 9 RC2
 - Blazor Web App (Rendermode: InteractiveAuto)
-~~- .NET Aspire~~ // Removed Aspire from project since it's container based
+- ~~.NET Aspire~~ // Removed Aspire from project since it's container based
 - Serilog Sinks
 - Result pattern
 - Type-based Localization
