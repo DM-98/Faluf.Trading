@@ -6,7 +6,6 @@ namespace Faluf.Trading.Blazor.Middlewares;
 
 public sealed class AuthorizationMiddleware(RequestDelegate next)
 {
-
 	public async Task InvokeAsync(HttpContext httpContext, ICookieService cookieService)
 	{
 		Cookie? accessTokenCookie = await cookieService.GetAsync("accessToken");

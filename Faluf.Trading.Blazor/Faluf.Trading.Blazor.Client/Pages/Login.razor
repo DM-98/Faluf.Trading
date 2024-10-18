@@ -77,6 +77,6 @@
 			return;
 		}
 
-		NavigationManager.NavigateTo("/", true);
+		NavigationManager.NavigateTo(!string.IsNullOrWhiteSpace(ReturnUrl) ? ReturnUrl : "/", forceLoad: true);
 	}
 }

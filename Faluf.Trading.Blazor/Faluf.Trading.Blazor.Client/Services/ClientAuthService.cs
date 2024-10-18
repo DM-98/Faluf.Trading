@@ -1,24 +1,30 @@
 ﻿using System.Net.Http.Json;
+using BitzArt.Blazor.Cookies;
 using Microsoft.Extensions.Localization;
-using Microsoft.JSInterop;
 
 namespace Faluf.Trading.Blazor.Client.Services;
 
-public sealed class ClientAuthService(IJSRuntime jsRuntime, HttpClient httpClient, IStringLocalizer<ClientAuthService> stringLocalizer) : IAuthService
+public sealed class ClientAuthService(ICookieService cookieService, HttpClient httpClient, IStringLocalizer<ClientAuthService> stringLocalizer) : IAuthService
 {
 	public async Task<Result<TokenDTO>> LoginAsync(LoginInputModel loginInputModel, CancellationToken cancellationToken = default)
 	{
-		HttpResponseMessage response = await httpClient.PostAsJsonAsync("api/Auth/Login", loginInputModel, cancellationToken);
-		Result<TokenDTO>? loginResult = await response.Content.ReadFromJsonAsync<Result<TokenDTO>>(cancellationToken);
-
-		if (loginResult is null or { IsSuccess: false })
+		try
 		{
-			return Result.BadRequest<TokenDTO>(stringLocalizer["BadRequest"]);
+			HttpResponseMessage response = await httpClient.PostAsJsonAsync("api/Auth/Login", loginInputModel, cancellationToken);
+			Result<TokenDTO> loginResult = await response.Content.ReadFromJsonAsync<Result<TokenDTO>>(cancellationToken) ?? Result.BadRequest<TokenDTO>(stringLocalizer["UnableToDeserialize"]);
+
+			if (loginResult.IsSuccess)
+			{
+				await cookieService.SetAsync("accessToken", loginResult.Content.AccessToken, loginInputModel.IsRememberMeChecked ? DateTime.Now.AddYears(1) : null, cancellationToken);
+				await cookieService.SetAsync("rememberMe", loginInputModel.IsRememberMeChecked.ToString(), DateTime.Now.AddYears(1), cancellationToken);
+			}
+
+			return loginResult;
 		}
-
-		await jsRuntime.InvokeVoidAsync("localStorage.setItem", "accessToken", loginResult.Content.AccessToken);
-
-		return loginResult;
+		catch (Exception ex)
+		{
+			return Result.InternalServerError<TokenDTO>(stringLocalizer["InternalServerError"], ex);
+		}
 	}
 
 	public Task<Result<TokenDTO>> RefreshTokensAsync(TokenDTO tokenDTO, CancellationToken cancellationToken = default)

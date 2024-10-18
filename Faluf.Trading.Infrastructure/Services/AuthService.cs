@@ -1,17 +1,14 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using BitzArt.Blazor.Cookies;
 using FluentValidation;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using BCryptNext = BCrypt.Net.BCrypt;
 
 namespace Faluf.Trading.Infrastructure.Services;
 
-public sealed class AuthService(ICookieService cookieService, AuthenticationStateProvider authenticationStateProvider, IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository, ILogger<AuthService> logger, IStringLocalizer<AuthService> stringLocalizer, IConfiguration configuration) : IAuthService
+public sealed class AuthService(IUserRepository userRepository, IAuthStateRepository authStateRepository, ILogger<AuthService> logger, IStringLocalizer<AuthService> stringLocalizer, IConfiguration configuration) : IAuthService
 {
 	private readonly string secret = configuration["JWT:Secret"]!;
 	private readonly string issuer = configuration["JWT:Issuer"]!;
@@ -27,14 +24,19 @@ public sealed class AuthService(ICookieService cookieService, AuthenticationStat
 
 			if (user is null)
 			{
+				logger.LogInformation("User not found by email.");
+
 				return Result.Unauthorized<TokenDTO>(stringLocalizer["BadCredentials"]);
 			}
 
-			DateTimeOffset? dateTimeLockoutEnd = await userRepository.GetLockoutEndDateAsync(user, cancellationToken).ConfigureAwait(false);
+			AuthState? authState = await authStateRepository.GetByUserIdAndClientTypeAsync(user.Id, loginInputModel.ClientType, cancellationToken);
+			authState ??= new() { UserId = user.Id, ClientType = loginInputModel.ClientType };
 
-			if (dateTimeLockoutEnd > DateTimeOffset.Now)
+			if (authState.LockoutEndUTC > DateTimeOffset.UtcNow)
 			{
-				TimeSpan lockoutEnd = (dateTimeLockoutEnd - DateTimeOffset.Now).Value;
+				logger.LogInformation("User is locked out.");
+
+				TimeSpan lockoutEnd = (authState.LockoutEndUTC - DateTimeOffset.UtcNow).Value;
 				double lockoutEndMinutes = Math.Ceiling(lockoutEnd.TotalMinutes);
 				double lockoutEndSeconds = Math.Ceiling(lockoutEnd.TotalSeconds);
 
@@ -45,20 +47,27 @@ public sealed class AuthService(ICookieService cookieService, AuthenticationStat
 
 			if (!isValidPassword)
 			{
-				user.AccessFailedCount++;
+				logger.LogInformation("Bad credentials.");
 
-				if (user.AccessFailedCount >= 5)
+				if (++authState.AccessFailedCount >= 5)
 				{
-					user.LockoutEndUTC = DateTime.UtcNow.AddMinutes(15);
-					user.AccessFailedCount = 0;
+					logger.LogInformation("User is now locked out.");
+
+					authState.LockoutEndUTC = DateTime.UtcNow.AddMinutes(5);
+					authState.AccessFailedCount = 0;
 				}
 
-				await userRepository.UpsertAsync(user, cancellationToken).ConfigureAwait(false);
+				await authStateRepository.UpsertAsync(authState, cancellationToken).ConfigureAwait(false);
 
-				return Result.Unauthorized<TokenDTO>(stringLocalizer["BadCredentials", user.AccessFailedCount]);
+				return Result.Unauthorized<TokenDTO>(stringLocalizer["BadCredentials", authState.AccessFailedCount]);
 			}
 
-			string jti = Guid.NewGuid().ToString();
+			authState.AccessFailedCount = 0;
+			authState.LockoutEndUTC = null;
+			authState.RefreshToken = Guid.NewGuid().ToString();
+			authState.RefreshTokentExpiryUTC = DateTimeOffset.UtcNow.AddDays(refreshTokenExpiryInDays);
+
+			await authStateRepository.UpsertAsync(authState, cancellationToken).ConfigureAwait(false);
 
 			List<Claim> claims =
 			[
@@ -66,36 +75,14 @@ public sealed class AuthService(ICookieService cookieService, AuthenticationStat
 				new(ClaimTypes.Name, user.FirstName),
 				new(ClaimTypes.Surname, user.LastName),
 				new(ClaimTypes.Email, user.Email),
-				new(JwtRegisteredClaimNames.Jti, jti)
+				new(JwtRegisteredClaimNames.Jti, authState.RefreshToken)
 			];
 
-			foreach (string role in user.Roles)
-			{
-				claims.Add(new(ClaimTypes.Role, role));
-			}
-
-			RefreshToken? currentRefreshToken = await refreshTokenRepository.GetByUserIdAndClientTypeAsync(user.Id, loginInputModel.ClientType, cancellationToken);
-
-			currentRefreshToken ??= new();
-			currentRefreshToken.UserId = user.Id;
-			currentRefreshToken.Token = jti;
-			currentRefreshToken.ExpiresAtUTC = DateTime.UtcNow.AddDays(refreshTokenExpiryInDays);
-			currentRefreshToken.ClientType = loginInputModel.ClientType;
-
-			await refreshTokenRepository.UpsertAsync(currentRefreshToken, cancellationToken).ConfigureAwait(false);
-
-			user.AccessFailedCount = 0;
-
-			await userRepository.UpsertAsync(user, cancellationToken).ConfigureAwait(false);
+			user.Roles.ForEach(role => claims.Add(new(ClaimTypes.Role, role)));
 
 			string accessToken = GenerateAccessToken(claims);
 
-			await cookieService.SetAsync("accessToken", accessToken, loginInputModel.IsRememberMeChecked ? DateTime.Now.AddYears(1) : null, cancellationToken);
-			await cookieService.SetAsync("rememberMe", loginInputModel.IsRememberMeChecked.ToString(), DateTime.Now.AddYears(1), cancellationToken);
-
-			((RevalidatingServerAuthenticationStateProvider)authenticationStateProvider).SetAuthenticationState(Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt")))));
-
-			return Result.Ok(new TokenDTO(accessToken, jti));
+			return Result.Ok(new TokenDTO(accessToken, authState.RefreshToken));
 		}
 		catch (Exception ex)
 		{
@@ -113,29 +100,35 @@ public sealed class AuthService(ICookieService cookieService, AuthenticationStat
 
 			if (oldClaims is null)
 			{
+				logger.LogInformation("oldClaims is null.");
+
 				return Result.Unauthorized<TokenDTO>(stringLocalizer["Unauthorized"]);
 			}
 
-			RefreshToken? refreshToken = await refreshTokenRepository.GetByRefreshTokenAsync(tokenDTO.RefreshToken, cancellationToken).ConfigureAwait(false);
+			AuthState? refreshToken = await authStateRepository.GetByRefreshTokenAsync(tokenDTO.RefreshToken, cancellationToken).ConfigureAwait(false);
 
-			if (refreshToken is null || refreshToken.LockoutEndUTC > DateTimeOffset.UtcNow || refreshToken.ExpiresAtUTC < DateTimeOffset.UtcNow)
+			if (refreshToken is null || refreshToken.LockoutEndUTC > DateTimeOffset.UtcNow || refreshToken.RefreshTokentExpiryUTC < DateTimeOffset.UtcNow)
 			{
+				logger.LogInformation("No existing refreshtoken or locked out or refresh token expired.");
+
 				return Result.Unauthorized<TokenDTO>(stringLocalizer["Unauthorized"]);
 			}
 
-			string newJti = Guid.NewGuid().ToString();
+			refreshToken.RefreshToken = Guid.NewGuid().ToString();
+			refreshToken.RefreshTokentExpiryUTC = DateTime.UtcNow.AddDays(refreshTokenExpiryInDays);
 
-			refreshToken.Token = newJti;
-			refreshToken.ExpiresAtUTC = DateTime.UtcNow.AddDays(refreshTokenExpiryInDays);
-
-			await refreshTokenRepository.UpsertAsync(refreshToken, cancellationToken).ConfigureAwait(false);
+			await authStateRepository.UpsertAsync(refreshToken, cancellationToken).ConfigureAwait(false);
 
 			List<Claim> newClaims = new(oldClaims.Where(x => x.Type is not JwtRegisteredClaimNames.Jti))
 			{
-				new(JwtRegisteredClaimNames.Jti, newJti)
+				new(JwtRegisteredClaimNames.Jti, refreshToken.RefreshToken)
 			};
 
-			return Result.Ok(new TokenDTO(GenerateAccessToken(newClaims), newJti));
+			string newAccessToken = GenerateAccessToken(newClaims);
+			
+			logger.LogInformation("Tokens are refreshed | Old values: ({oldAccessToken}, {oldRefreshToken}) | New values: ({newAccessToken}, {newRefreshToken}).", tokenDTO.AccessToken, tokenDTO.RefreshToken, newAccessToken, refreshToken.RefreshToken);
+
+			return Result.Ok(new TokenDTO(newAccessToken, refreshToken.RefreshToken));
 		}
 		catch (Exception ex)
 		{
@@ -180,11 +173,11 @@ public sealed class AuthService(ICookieService cookieService, AuthenticationStat
 	{
 		try
 		{
-			RefreshToken? refreshTokenEntity = await refreshTokenRepository.GetByRefreshTokenAsync(refreshToken, cancellationToken).ConfigureAwait(false);
+			AuthState? refreshTokenEntity = await authStateRepository.GetByRefreshTokenAsync(refreshToken, cancellationToken).ConfigureAwait(false);
 
 			if (refreshTokenEntity is null
-				|| !BCryptNext.Verify(refreshToken, refreshTokenEntity.Token)
-				|| refreshTokenEntity.ExpiresAtUTC < DateTimeOffset.UtcNow
+				|| !BCryptNext.Verify(refreshToken, refreshTokenEntity.RefreshToken)
+				|| refreshTokenEntity.RefreshTokentExpiryUTC < DateTimeOffset.UtcNow
 				|| refreshTokenEntity.LockoutEndUTC < DateTimeOffset.UtcNow)
 			{
 				return Result.Unauthorized(stringLocalizer["Unauthorized"]);
@@ -204,7 +197,7 @@ public sealed class AuthService(ICookieService cookieService, AuthenticationStat
 	{
 		try
 		{
-			RefreshToken? refreshTokenEntity = await refreshTokenRepository.GetByRefreshTokenAsync(refreshToken, cancellationToken).ConfigureAwait(false);
+			AuthState? refreshTokenEntity = await authStateRepository.GetByRefreshTokenAsync(refreshToken, cancellationToken).ConfigureAwait(false);
 
 			if (refreshTokenEntity is null)
 			{
@@ -213,7 +206,7 @@ public sealed class AuthService(ICookieService cookieService, AuthenticationStat
 
 			refreshTokenEntity.LockoutEndUTC = DateTime.UtcNow;
 
-			await refreshTokenRepository.UpsertAsync(refreshTokenEntity, cancellationToken).ConfigureAwait(false);
+			await authStateRepository.UpsertAsync(refreshTokenEntity, cancellationToken).ConfigureAwait(false);
 
 			return Result.Ok();
 		}
@@ -229,14 +222,14 @@ public sealed class AuthService(ICookieService cookieService, AuthenticationStat
 	{
 		try
 		{
-			IEnumerable<RefreshToken> refreshTokens = await refreshTokenRepository.GetRefreshTokensByUserIdAsync(userId, cancellationToken).ConfigureAwait(false);
+			IEnumerable<AuthState> refreshTokens = await authStateRepository.GetRefreshTokensByUserIdAsync(userId, cancellationToken).ConfigureAwait(false);
 
-			foreach (RefreshToken refreshToken in refreshTokens)
+			foreach (AuthState refreshToken in refreshTokens)
 			{
 				refreshToken.LockoutEndUTC = DateTime.UtcNow;
 			}
 
-			await refreshTokenRepository.UpdateRangeAsync(refreshTokens, cancellationToken).ConfigureAwait(false);
+			await authStateRepository.UpdateRangeAsync(refreshTokens, cancellationToken).ConfigureAwait(false);
 
 			return Result.Ok();
 		}

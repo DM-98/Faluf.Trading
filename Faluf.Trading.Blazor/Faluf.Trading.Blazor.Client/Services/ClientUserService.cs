@@ -8,13 +8,7 @@ public sealed class ClientUserService(HttpClient httpClient, IStringLocalizer<Cl
 	public async Task<Result<User>> RegisterAsync(RegisterInputModel registerInputModel, CancellationToken cancellationToken = default)
 	{
 		HttpResponseMessage response = await httpClient.PostAsJsonAsync("api/User/Register", registerInputModel, cancellationToken);
-
-		Result<User>? userResult = await response.Content.ReadFromJsonAsync<Result<User>>(cancellationToken);
-
-		if (userResult is null)
-		{
-			return Result.BadRequest<User>(stringLocalizer["BadRequest"]);
-		}
+		Result<User> userResult = await response.Content.ReadFromJsonAsync<Result<User>>(cancellationToken) ?? Result.BadRequest<User>(stringLocalizer["UnableToDeserialize"]);
 
 		return userResult;
 	}

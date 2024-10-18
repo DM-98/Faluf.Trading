@@ -8,7 +8,7 @@ public sealed class TradingDbContext(DbContextOptions<TradingDbContext> options)
 {
 	public DbSet<User> Users => Set<User>();
 
-    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<AuthState> AuthStates => Set<AuthState>();
 
     public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 

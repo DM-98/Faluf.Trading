@@ -12,7 +12,5 @@ public sealed class User : BaseEntity
 
     public List<string> Roles { get; set; } = [];
 
-    public int AccessFailedCount { get; set; }
-
-    public DateTimeOffset? LockoutEndUTC { get; set; }
+	public ICollection<AuthState> AuthStates { get; set; } = [];
 }

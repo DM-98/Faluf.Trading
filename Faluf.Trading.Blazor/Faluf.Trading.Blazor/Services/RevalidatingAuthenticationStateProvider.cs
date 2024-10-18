@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Components.Server;
 
 namespace Faluf.Trading.Blazor.Services;
 
-// This is a server-side AuthenticationStateProvider that revalidates the security stamp for the connected user
-// every 5 minutes an interactive circuit is connected.
 public sealed class RevalidatingAuthenticationStateProvider(ICookieService cookieService, ILoggerFactory loggerFactory, IServiceScopeFactory serviceScopeFactory) : RevalidatingServerAuthenticationStateProvider(loggerFactory)
 {
 	protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(5);
@@ -32,23 +30,25 @@ public sealed class RevalidatingAuthenticationStateProvider(ICookieService cooki
 
 		if (accessTokenExpiry < DateTimeOffset.UtcNow)
 		{
-			string refreshToken = claims.FirstOrDefault(x => x.Type is JwtRegisteredClaimNames.Jti)?.Value!;
+			string refreshToken = claims.First(x => x.Type is JwtRegisteredClaimNames.Jti).Value;
 
 			Result<TokenDTO> refreshTokensResult = await authService.RefreshTokensAsync(new TokenDTO(accessTokenCookie.Value, refreshToken));
 
 			if (!refreshTokensResult.IsSuccess)
 			{
+				await cookieService.RemoveAsync("accessToken");
+				await cookieService.RemoveAsync("rememberMe");
+
 				return anonAuthState;
 			}
+
+			bool isRememberMe = await cookieService.GetAsync("rememberMe") is { Value: "True" };
+			await cookieService.SetAsync("accessToken", refreshTokensResult.Content.AccessToken, isRememberMe ? DateTime.Now.AddYears(1) : null);
 
 			IEnumerable<Claim> newClaims = new JwtSecurityTokenHandler().ReadJwtToken(refreshTokensResult.Content.AccessToken).Claims;
 			ClaimsPrincipal claimsPrincipal = new(new ClaimsIdentity(newClaims, "jwt"));
 			SetAuthenticationState(Task.FromResult(new AuthenticationState(claimsPrincipal)));
 			
-			bool isRememberMe = await cookieService.GetAsync("rememberMe") is { Value: "True" };
-
-			await cookieService.SetAsync("accessToken", refreshTokensResult.Content.AccessToken, isRememberMe ? DateTime.Now.AddYears(1) : null);
-
 			return new AuthenticationState(claimsPrincipal);
 		}
 

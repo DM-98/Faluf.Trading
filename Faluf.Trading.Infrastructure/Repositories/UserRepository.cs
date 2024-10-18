@@ -31,11 +31,4 @@ public sealed class UserRepository(IDbContextFactory<TradingDbContext> dbContext
 
         return await context.Users.FirstOrDefaultAsync(x => x.Email == email, cancellationToken).ConfigureAwait(false);
     }
-
-    public async Task<DateTimeOffset?> GetLockoutEndDateAsync(User user, CancellationToken cancellationToken = default)
-    {
-        await using TradingDbContext context = await DbContextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
-
-        return await context.Users.Where(x => x.Id == user.Id).Select(x => x.LockoutEndUTC).FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
-    }
 }
