@@ -6,8 +6,6 @@ namespace Faluf.Trading.Infrastructure.Contexts;
 
 public sealed class TradingDbContext(DbContextOptions<TradingDbContext> options) : DbContext(options), IDataProtectionKeyContext
 {
-	public DbSet<NewsArticle> NewsArticles => Set<NewsArticle>();
-
 	public DbSet<User> Users => Set<User>();
 
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();

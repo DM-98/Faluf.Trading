@@ -8,7 +8,5 @@ public interface IRefreshTokenRepository : IBaseRepository<RefreshToken>
 
 	Task<IEnumerable<RefreshToken>> GetRefreshTokensByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
 
-    Task<bool> IsRefreshTokenBlacklistedAsync(string refreshToken, CancellationToken cancellationToken = default);
-
     Task UpdateRangeAsync(IEnumerable<RefreshToken> refreshTokens, CancellationToken cancellationToken = default);
 }

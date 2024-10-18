@@ -102,7 +102,6 @@ public static class ServiceCollectionHelper
     public static IServiceCollection AddTradingRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<INewsArticleRepository, NewsArticleRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
         return services;
@@ -112,7 +111,6 @@ public static class ServiceCollectionHelper
     {
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<INewsArticleService, NewsArticleService>();
 
         return services;
     }

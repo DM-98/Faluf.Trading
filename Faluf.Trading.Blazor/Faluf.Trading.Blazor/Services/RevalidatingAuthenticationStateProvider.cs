@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Components.Server;
 namespace Faluf.Trading.Blazor.Services;
 
 // This is a server-side AuthenticationStateProvider that revalidates the security stamp for the connected user
-// every 30 seconds an interactive circuit is connected.
-public sealed class RevalidatingAuthenticationStateProvider(ICookieService cookieService, ILogger<RevalidatingAuthenticationStateProvider> logger, ILoggerFactory loggerFactory, IServiceScopeFactory serviceScopeFactory) : RevalidatingServerAuthenticationStateProvider(loggerFactory)
+// every 5 minutes an interactive circuit is connected.
+public sealed class RevalidatingAuthenticationStateProvider(ICookieService cookieService, ILoggerFactory loggerFactory, IServiceScopeFactory serviceScopeFactory) : RevalidatingServerAuthenticationStateProvider(loggerFactory)
 {
-	protected override TimeSpan RevalidationInterval => TimeSpan.FromSeconds(30);
+	protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(5);
 
 	private static readonly AuthenticationState anonAuthState = new(new(new ClaimsIdentity()));
 
@@ -32,8 +32,6 @@ public sealed class RevalidatingAuthenticationStateProvider(ICookieService cooki
 
 		if (accessTokenExpiry < DateTimeOffset.UtcNow)
 		{
-			logger.LogInformation("Access token expired");
-
 			string refreshToken = claims.FirstOrDefault(x => x.Type is JwtRegisteredClaimNames.Jti)?.Value!;
 
 			Result<TokenDTO> refreshTokensResult = await authService.RefreshTokensAsync(new TokenDTO(accessTokenCookie.Value, refreshToken));
@@ -47,8 +45,6 @@ public sealed class RevalidatingAuthenticationStateProvider(ICookieService cooki
 			ClaimsPrincipal claimsPrincipal = new(new ClaimsIdentity(newClaims, "jwt"));
 			SetAuthenticationState(Task.FromResult(new AuthenticationState(claimsPrincipal)));
 			
-			logger.LogInformation("Refreshed the tokens");
-
 			bool isRememberMe = await cookieService.GetAsync("rememberMe") is { Value: "True" };
 
 			await cookieService.SetAsync("accessToken", refreshTokensResult.Content.AccessToken, isRememberMe ? DateTime.Now.AddYears(1) : null);
