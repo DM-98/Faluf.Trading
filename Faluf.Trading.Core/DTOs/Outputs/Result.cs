@@ -44,11 +44,7 @@ public class Result<T>
 
     public static Result<TValue> Locked<TValue>(string errorMessage) where TValue : T => new(false, errorMessage: errorMessage, statusCode: HttpStatusCode.Locked);
 
-	//public static Result<TValue> NotFound<TValue>(string errorMessage) where TValue : T => new(false, errorMessage: errorMessage, statusCode: HttpStatusCode.NotFound);
-
 	public static Result<TValue> BadRequest<TValue>(string errorMessage) where TValue : T => new(false, errorMessage: errorMessage, statusCode: HttpStatusCode.BadRequest);
-
-	public static Result<TValue> BadRequest<TValue>(IEnumerable<string> errorMessages) where TValue : T => new(false, errorMessage: string.Join(Environment.NewLine, errorMessages), statusCode: HttpStatusCode.BadRequest);
 
 	public static Result<TValue> InternalServerError<TValue>(string errorMessage, Exception ex) where TValue : T => new(false, errorMessage: errorMessage, exception: ex, statusCode: HttpStatusCode.InternalServerError);
 }

@@ -2,7 +2,7 @@
 
 public interface IUserRepository : IBaseRepository<User>
 {
-	Task<(IReadOnlyCollection<User> items, int recordCount)> GetUsersAsync(UserFilter filter, CancellationToken cancellationToken = default);
+	Task<(IReadOnlyCollection<User> Items, int RecordCount)> GetUsersAsync(UserFilter filter, CancellationToken cancellationToken = default);
 
     Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
 }

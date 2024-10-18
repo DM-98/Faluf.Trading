@@ -8,7 +8,8 @@ using BCryptNext = BCrypt.Net.BCrypt;
 
 namespace Faluf.Trading.Infrastructure.Services;
 
-public sealed class AuthService(IUserRepository userRepository, IAuthStateRepository authStateRepository, ILogger<AuthService> logger, IStringLocalizer<AuthService> stringLocalizer, IConfiguration configuration) : IAuthService
+public sealed class AuthService(IUserRepository userRepository, IAuthStateRepository authStateRepository, ILogger<AuthService> logger, IStringLocalizer<AuthService> stringLocalizer, IConfiguration configuration) 
+	: IAuthService
 {
 	private readonly string secret = configuration["JWT:Secret"]!;
 	private readonly string issuer = configuration["JWT:Issuer"]!;

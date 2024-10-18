@@ -2,9 +2,10 @@
 
 namespace Faluf.Trading.Infrastructure.Repositories;
 
-public sealed class UserRepository(IDbContextFactory<TradingDbContext> dbContextFactory) : BaseRepository<User, TradingDbContext>(dbContextFactory), IUserRepository
+public sealed class UserRepository(IDbContextFactory<TradingDbContext> dbContextFactory) 
+	: BaseRepository<User, TradingDbContext>(dbContextFactory), IUserRepository
 {
-	public async Task<(IReadOnlyCollection<User> items, int recordCount)> GetUsersAsync(UserFilter filter, CancellationToken cancellationToken = default)
+	public async Task<(IReadOnlyCollection<User> Items, int RecordCount)> GetUsersAsync(UserFilter filter, CancellationToken cancellationToken = default)
 	{
 		await using TradingDbContext context = await DbContextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
 		IQueryable<User> query = context.Users;
@@ -18,7 +19,7 @@ public sealed class UserRepository(IDbContextFactory<TradingDbContext> dbContext
 
 		int recordCount = await query.CountAsync(cancellationToken).ConfigureAwait(false);
 
-		query = query.Skip(filter.Page * filter.PageSize).Take(filter.PageSize);
+		query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
 
 		IReadOnlyCollection<User> items = await query.ToListAsync(cancellationToken).ConfigureAwait(false);
 

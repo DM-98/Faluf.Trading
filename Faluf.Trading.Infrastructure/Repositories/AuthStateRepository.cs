@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Faluf.Trading.Infrastructure.Repositories;
 
-public sealed class AuthStateRepository(IDbContextFactory<TradingDbContext> dbContextFactory) : BaseRepository<AuthState, TradingDbContext>(dbContextFactory), IAuthStateRepository
+public sealed class AuthStateRepository(IDbContextFactory<TradingDbContext> dbContextFactory) 
+    : BaseRepository<AuthState, TradingDbContext>(dbContextFactory), IAuthStateRepository
 {
     public async Task<AuthState?> GetByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
     {

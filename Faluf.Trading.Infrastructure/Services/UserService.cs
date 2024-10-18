@@ -2,7 +2,8 @@
 
 namespace Faluf.Trading.Infrastructure.Services;
 
-public sealed class UserService(IUserRepository userRepository, IStringLocalizer<UserService> stringLocalizer, ILogger<UserService> logger) : IUserService
+public sealed class UserService(IUserRepository userRepository, IStringLocalizer<UserService> stringLocalizer, ILogger<UserService> logger) 
+	: IUserService
 {
 	public async Task<Result<User>> RegisterAsync(RegisterInputModel registerInputModel, CancellationToken cancellationToken = default)
 	{
