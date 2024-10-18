@@ -11,7 +11,5 @@ public abstract class BaseEntity : ISoftDeletable
 
 	public DateTime? UpdatedAtUTC { get; set; }
 
-	public bool IsDeleted => DeletedAtUTC.HasValue;
-
 	public DateTime? DeletedAtUTC { get; set; }
 }
