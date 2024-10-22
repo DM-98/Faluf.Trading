@@ -7,7 +7,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-		<PackageReference Include="BitzArt.Blazor.Cookies.Server" Version="1.0.4" />
 		<PackageReference Include="Mapster" Version="7.4.1-pre01" />
 		<PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="9.0.0-rc.2.24474.3" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0-rc.2.24474.1" />

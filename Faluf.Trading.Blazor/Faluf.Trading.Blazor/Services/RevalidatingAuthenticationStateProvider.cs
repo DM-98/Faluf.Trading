@@ -2,15 +2,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using BitzArt.Blazor.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server;
 
 namespace Faluf.Trading.Blazor.Services;
 
-public sealed class RevalidatingAuthenticationStateProvider(ICookieService cookieService, ILoggerFactory loggerFactory, IServiceScopeFactory serviceScopeFactory) 
-	: RevalidatingServerAuthenticationStateProvider(loggerFactory)
+public sealed class JWTAuthenticationStateProvider(ICookieService cookieService, IAuthService authService) : AuthenticationStateProvider
 {
-	protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(5);
-
 	private static readonly AuthenticationState anonAuthState = new(new(new ClaimsIdentity()));
 
 	public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -30,9 +26,6 @@ public sealed class RevalidatingAuthenticationStateProvider(ICookieService cooki
 		{
 			string refreshToken = claims.First(x => x.Type is JwtRegisteredClaimNames.Jti).Value;
 
-			await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
-			IAuthService authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
-
 			Result<TokenDTO> refreshTokensResult = await authService.RefreshTokensAsync(new TokenDTO(accessTokenCookie.Value, refreshToken));
 
 			if (!refreshTokensResult.IsSuccess)
@@ -48,13 +41,11 @@ public sealed class RevalidatingAuthenticationStateProvider(ICookieService cooki
 
 			IEnumerable<Claim> newClaims = new JwtSecurityTokenHandler().ReadJwtToken(refreshTokensResult.Content.AccessToken).Claims;
 			ClaimsPrincipal claimsPrincipal = new(new ClaimsIdentity(newClaims, "jwt"));
-			SetAuthenticationState(Task.FromResult(new AuthenticationState(claimsPrincipal)));
+			NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
 
 			return new AuthenticationState(claimsPrincipal);
 		}
 
 		return new(new(new ClaimsIdentity(claims, "jwt")));
 	}
-
-	protected override async Task<bool> ValidateAuthenticationStateAsync(AuthenticationState authenticationState, CancellationToken cancellationToken) => (await GetAuthenticationStateAsync()).User.Identity?.IsAuthenticated == true;
 }

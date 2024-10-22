@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Faluf.Trading.Blazor.Controllers;
 
@@ -12,5 +14,12 @@ public sealed class UserController(IUserService userService) : ControllerBase
 		Result<User> result = await userService.RegisterAsync(registerInputModel, cancellationToken);
 
 		return StatusCode((int)result.StatusCode, result);
+	}
+
+	[HttpGet("Test")]
+	[Authorize]
+	public ActionResult Test()
+	{
+		return Ok();
 	}
 }

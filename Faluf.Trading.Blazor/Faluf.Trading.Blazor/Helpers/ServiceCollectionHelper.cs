@@ -57,11 +57,10 @@ public static class ServiceCollectionHelper
     public static IServiceCollection AddTradingAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddCascadingAuthenticationState();
-        services.AddScoped<AuthenticationStateProvider, RevalidatingAuthenticationStateProvider>();
-        services.AddSingleton<IAuthorizationMiddlewareResultHandler, BlazorAuthorizationMiddlewareResultHandler>();
+        services.AddScoped<AuthenticationStateProvider, JWTAuthenticationStateProvider>();
         services.AddAuthentication(options =>
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+			options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(options =>
         {
@@ -71,9 +70,25 @@ public static class ServiceCollectionHelper
             options.TokenValidationParameters.ValidAudience = configuration["JWT:Audience"]!;
             options.TokenValidationParameters.ValidIssuer = configuration["JWT:Issuer"]!;
             options.TokenValidationParameters.ClockSkew = TimeSpan.Zero;
-        });
+            options.Events = new()
+			{
+				OnMessageReceived = context =>
+				{
+					context.Token = context.Request.Cookies["accessToken"];
 
-        return services;
+					return Task.CompletedTask;
+				},
+				OnChallenge = context =>
+				{
+					context.HandleResponse();
+					context.Response.StatusCode = 401;
+
+					return Task.CompletedTask;
+				}
+			};
+		});
+
+		return services;
     }
 
     public static IServiceCollection AddTradingRepositories(this IServiceCollection services)
