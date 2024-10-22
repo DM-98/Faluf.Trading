@@ -15,7 +15,6 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0-rc.2.24474.1" />
 		<PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
 		<PackageReference Include="Serilog.Sinks.MSSqlServer" Version="7.0.2-dev-00107" />
-		<PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>

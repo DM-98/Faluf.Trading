@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
-using Serilog.Sinks.MSSqlServer;
 
 namespace Faluf.Trading.Blazor.Helpers;
 
@@ -25,36 +24,14 @@ public static class ServiceCollectionHelper
         builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
         {
             loggerConfiguration.MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning);
+			loggerConfiguration.MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning);
 
 			loggerConfiguration.WriteTo.Console(LogEventLevel.Information);
-
             loggerConfiguration.WriteTo.MSSqlServer(
                 connectionString: builder.Configuration.GetConnectionString("TradingConnection")!,
                 sinkOptions: new() { TableName = "Logs", AutoCreateSqlTable = true },
                 restrictedToMinimumLevel: LogEventLevel.Warning,
-                columnOptions: new() { AdditionalColumns = [new SqlColumn("LogEvent", SqlDbType.NVarChar)] });
-
-            loggerConfiguration.WriteTo.OpenTelemetry(options =>
-            {
-                string[] headers = builder.Configuration["OTEL_EXPORTER_OTLP_HEADERS"]?.Split(',') ?? [];
-
-                foreach (string header in headers)
-                {
-                    string[] parts = header.Split('=');
-
-                    (string key, string value) = parts.Length switch
-                    {
-                        2 => (parts[0], parts[1]),
-                        _ => throw new Exception($"Invalid header format: {header}")
-                    };
-
-                    options.Headers.Add(key, value);
-                }
-
-                options.Endpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
-                options.ResourceAttributes.Add("service.name", "apiservice");
-                options.RestrictedToMinimumLevel = LogEventLevel.Information;
-            });
+                columnOptions: new() { AdditionalColumns = [new("LogEvent", SqlDbType.NVarChar)] });
         });
 
 		// Localization

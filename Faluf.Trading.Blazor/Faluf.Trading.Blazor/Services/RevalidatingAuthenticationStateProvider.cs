@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Components.Server;
 
 namespace Faluf.Trading.Blazor.Services;
 
-public sealed class RevalidatingAuthenticationStateProvider(ICookieService cookieService, ILoggerFactory loggerFactory, IServiceScopeFactory serviceScopeFactory) : RevalidatingServerAuthenticationStateProvider(loggerFactory)
+public sealed class RevalidatingAuthenticationStateProvider(ICookieService cookieService, ILoggerFactory loggerFactory, IServiceScopeFactory serviceScopeFactory) 
+	: RevalidatingServerAuthenticationStateProvider(loggerFactory)
 {
 	protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(5);
 
@@ -23,14 +24,14 @@ public sealed class RevalidatingAuthenticationStateProvider(ICookieService cooki
 
 		IEnumerable<Claim> claims = new JwtSecurityTokenHandler().ReadJwtToken(accessTokenCookie.Value).Claims;
 
-		await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
-		IAuthService authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
-
 		DateTimeOffset accessTokenExpiry = DateTimeOffset.FromUnixTimeSeconds(long.Parse(claims.First(x => x.Type == "exp").Value));
 
 		if (accessTokenExpiry < DateTimeOffset.UtcNow)
 		{
 			string refreshToken = claims.First(x => x.Type is JwtRegisteredClaimNames.Jti).Value;
+
+			await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
+			IAuthService authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
 
 			Result<TokenDTO> refreshTokensResult = await authService.RefreshTokensAsync(new TokenDTO(accessTokenCookie.Value, refreshToken));
 
@@ -48,7 +49,7 @@ public sealed class RevalidatingAuthenticationStateProvider(ICookieService cooki
 			IEnumerable<Claim> newClaims = new JwtSecurityTokenHandler().ReadJwtToken(refreshTokensResult.Content.AccessToken).Claims;
 			ClaimsPrincipal claimsPrincipal = new(new ClaimsIdentity(newClaims, "jwt"));
 			SetAuthenticationState(Task.FromResult(new AuthenticationState(claimsPrincipal)));
-			
+
 			return new AuthenticationState(claimsPrincipal);
 		}
 
