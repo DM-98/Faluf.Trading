@@ -1,0 +1,21 @@
+﻿@using System.Globalization
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Blazored.FluentValidation
+@using Faluf.Trading.Blazor
+@using Faluf.Trading.Blazor.Client
+@using Faluf.Trading.Core.DTOs.Inputs
+@using Faluf.Trading.Core.Enums
+@using Faluf.Trading.Core.Localization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.Extensions.Localization
+@using Microsoft.JSInterop
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+
+@attribute [ExcludeFromInteractiveRouting]
+
+@inject IStringLocalizer<SharedResource> SharedLocalizer

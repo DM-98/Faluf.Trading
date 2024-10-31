@@ -1,0 +1,50 @@
+﻿@using System.Globalization
+
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+@inject IStringLocalizer<CultureSelector> L
+
+<select @bind="@selectedCulture" @bind:after="ApplySelectedCultureAsync" class="form-select">
+	@foreach (var culture in supportedCultures)
+	{
+		<option value="@culture">@cultureDict[culture.Name]</option>
+	}
+</select>
+
+@code {
+	private Dictionary<string, string> cultureDict =
+		new()
+				{
+			{ "en-US", "English (United States)" },
+			{ "da-DK", "Danish (Denmark)" }
+				};
+
+	private CultureInfo[] supportedCultures = new[]
+	{
+		new CultureInfo("en-US"),
+		new CultureInfo("da-DK"),
+	};
+
+	private CultureInfo? selectedCulture;
+
+	protected override void OnInitialized()
+	{
+		selectedCulture = CultureInfo.CurrentCulture;
+	}
+
+	private async Task ApplySelectedCultureAsync()
+	{
+		if (CultureInfo.CurrentCulture != selectedCulture)
+		{
+			await JS.InvokeVoidAsync("blazorCulture.set", selectedCulture!.Name);
+
+			var uri = new Uri(Navigation.Uri).GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+			var cultureEscaped = Uri.EscapeDataString(selectedCulture.Name);
+			var uriEscaped = Uri.EscapeDataString(uri);
+
+			Navigation.NavigateTo(
+				$"Culture/Set?culture={cultureEscaped}&redirectUri={uriEscaped}",
+				forceLoad: true);
+		}
+	}
+}

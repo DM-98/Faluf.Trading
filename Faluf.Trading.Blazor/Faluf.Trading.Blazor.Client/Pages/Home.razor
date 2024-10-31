@@ -1,0 +1,27 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<p>
+	Welcome to your new app.
+</p>
+
+<p>
+	@SharedLocalizer["Greeting"]
+</p>
+
+<p>
+	Renderer: @RendererInfo.Name
+</p>
+
+<AuthorizeView>
+	<Authorized>
+		<p>Hello, @context.User.Identity?.Name!</p>
+		<p>Here is your token: @context.User.FindFirst(JwtRegisteredClaimNames.Jti)?.Value</p>
+	</Authorized>
+	<NotAuthorized>
+		<p>You are not logged in.</p>
+	</NotAuthorized>
+</AuthorizeView>

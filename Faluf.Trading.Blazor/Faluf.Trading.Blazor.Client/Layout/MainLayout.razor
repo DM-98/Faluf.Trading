@@ -1,0 +1,43 @@
+﻿@inherits LayoutComponentBase
+
+<div class="d-flex flex-column min-vh-100">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="/">Faluf</a>
+
+			<NavMenu />
+		</div>
+	</nav>
+
+	<div class="d-flex flex-grow-1">
+		<div class="flex-grow-1 p-4">
+			<SerilogErrorBoundary @ref="errorBoundary">
+				<ChildContent>
+					@Body
+				</ChildContent>
+
+				<ErrorContent>
+					<h1 class="display-4">Oops!</h1>
+					<p class="lead">An error occurred while rendering this page.</p>
+					<p>@context.HelpLink</p>
+					<p>Try refreshing the page or try recovering using this button.</p>
+					<button class="btn btn-info" @onclick="_ => errorBoundary?.Recover()">
+						Clear
+					</button>
+				</ErrorContent>
+			</SerilogErrorBoundary>
+		</div>
+	</div>
+
+	<footer class="bg-dark text-white text-center py-3 mt-auto">
+		<div class="container">
+			<p class="mb-0">&copy; 2024 Faluf. All rights reserved.</p>
+			<a href="/privacy" class="text-white me-3">Privacy Policy</a>
+			<a href="/terms" class="text-white">Terms of Service</a>
+		</div>
+	</footer>
+</div>
+
+@code {
+	private ErrorBoundary? errorBoundary;
+}

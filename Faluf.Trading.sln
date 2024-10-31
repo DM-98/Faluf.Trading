@@ -1,0 +1,54 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35309.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faluf.Trading.Blazor", "Faluf.Trading.Blazor\Faluf.Trading.Blazor\Faluf.Trading.Blazor.csproj", "{C7666034-D452-4775-B12A-37DBEB327ED5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faluf.Trading.Blazor.Client", "Faluf.Trading.Blazor\Faluf.Trading.Blazor.Client\Faluf.Trading.Blazor.Client.csproj", "{E5CAC805-1B0E-4ED5-80E4-83448DCEBD51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faluf.Trading.Core", "Faluf.Trading.Core\Faluf.Trading.Core.csproj", "{3CE41065-934E-4412-AEEF-AB6D3E79A747}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faluf.Trading.Infrastructure", "Faluf.Trading.Infrastructure\Faluf.Trading.Infrastructure.csproj", "{287694E9-8AA9-412B-83B8-C9D0C61FFADF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A. Core", "A. Core", "{82452462-0ABB-4286-A1F4-BE66E4D91F08}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B. Infrastructure", "B. Infrastructure", "{31D49E49-89C9-4ACA-8CF5-97BC6BC474A2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C. Blazor", "C. Blazor", "{210E340E-9EEA-4D53-8627-F5049108B40C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C7666034-D452-4775-B12A-37DBEB327ED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7666034-D452-4775-B12A-37DBEB327ED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7666034-D452-4775-B12A-37DBEB327ED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7666034-D452-4775-B12A-37DBEB327ED5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5CAC805-1B0E-4ED5-80E4-83448DCEBD51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5CAC805-1B0E-4ED5-80E4-83448DCEBD51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5CAC805-1B0E-4ED5-80E4-83448DCEBD51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5CAC805-1B0E-4ED5-80E4-83448DCEBD51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CE41065-934E-4412-AEEF-AB6D3E79A747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CE41065-934E-4412-AEEF-AB6D3E79A747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CE41065-934E-4412-AEEF-AB6D3E79A747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CE41065-934E-4412-AEEF-AB6D3E79A747}.Release|Any CPU.Build.0 = Release|Any CPU
+		{287694E9-8AA9-412B-83B8-C9D0C61FFADF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{287694E9-8AA9-412B-83B8-C9D0C61FFADF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{287694E9-8AA9-412B-83B8-C9D0C61FFADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{287694E9-8AA9-412B-83B8-C9D0C61FFADF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C7666034-D452-4775-B12A-37DBEB327ED5} = {210E340E-9EEA-4D53-8627-F5049108B40C}
+		{E5CAC805-1B0E-4ED5-80E4-83448DCEBD51} = {210E340E-9EEA-4D53-8627-F5049108B40C}
+		{3CE41065-934E-4412-AEEF-AB6D3E79A747} = {82452462-0ABB-4286-A1F4-BE66E4D91F08}
+		{287694E9-8AA9-412B-83B8-C9D0C61FFADF} = {31D49E49-89C9-4ACA-8CF5-97BC6BC474A2}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FB776099-6D44-44AE-AFCD-224A6FBBE818}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,14 @@
+﻿global using Faluf.Trading.Core.Abstractions.Interfaces;
+global using Faluf.Trading.Core.Abstractions.Models;
+global using Faluf.Trading.Core.Domain;
+global using Faluf.Trading.Core.DTOs.Inputs;
+global using Faluf.Trading.Core.DTOs.Outputs;
+global using Faluf.Trading.Core.Filters;
+global using Faluf.Trading.Core.Interfaces.Repositories;
+global using Faluf.Trading.Core.Interfaces.Services;
+global using Faluf.Trading.Infrastructure.Abstractions;
+global using Faluf.Trading.Infrastructure.Contexts;
+global using Faluf.Trading.Infrastructure.Helpers;
+global using Mapster;
+global using Microsoft.Extensions.Localization;
+global using Microsoft.Extensions.Logging;

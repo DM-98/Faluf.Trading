@@ -1,0 +1,60 @@
+﻿@page "/register"
+
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+
+<PageTitle>Register</PageTitle>
+
+<h3>Register</h3>
+
+<EditForm Model="@registerInputModel" OnValidSubmit="RegisterAsync" Context="formContext">
+	<FluentValidationValidator />
+
+	<div>
+		<label for="firstName">First name:</label>
+		<InputText id="firstName" @bind-Value="@registerInputModel.FirstName" />
+		<ValidationMessage For="@(() => registerInputModel.FirstName)" />
+	</div>
+
+	<div>
+		<label for="lastName">Last name:</label>
+		<InputText id="lastName" @bind-Value="@registerInputModel.LastName" />
+		<ValidationMessage For="@(() => registerInputModel.LastName)" />
+	</div>
+
+	<div>
+		<label for="email">Email:</label>
+		<InputText id="email" @bind-Value="@registerInputModel.Email" />
+		<ValidationMessage For="@(() => registerInputModel.Email)" />
+	</div>
+
+	<div>
+		<label for="password">Password:</label>
+		<InputText id="password" @bind-Value="@registerInputModel.Password" />
+		<ValidationMessage For="@(() => registerInputModel.Password)" />
+	</div>
+
+	<div>
+		<label for="confirmPassword">Confirm password:</label>
+		<InputText id="confirmPassword" @bind-Value="@registerInputModel.ConfirmPassword" />
+		<ValidationMessage For="@(() => registerInputModel.ConfirmPassword)" />
+	</div>
+
+	<button type="submit">Register</button>
+</EditForm>
+
+@code {
+	private readonly RegisterInputModel registerInputModel = new();
+
+	private async Task RegisterAsync()
+	{
+		Result<User> registerResult = await UserService.RegisterAsync(registerInputModel);
+
+		if (!registerResult.IsSuccess)
+		{
+			return;
+		}
+
+		NavigationManager.NavigateTo("/login");
+	}
+}

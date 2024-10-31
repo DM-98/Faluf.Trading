@@ -1,0 +1,12 @@
+﻿@page "/StatusCode/{status:int}"
+
+<PageTitle>@Status</PageTitle>
+
+<h1>@Status</h1>
+<h5>Page returned an unexpected result.</h5>
+<p>Try refreshing or navigate back.</p>
+
+@code {
+    [Parameter]
+    public int Status { get; set; }
+}
