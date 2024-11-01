@@ -5,7 +5,7 @@ using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddInteractiveWebAssemblyComponents();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddInteractiveWebAssemblyComponents().AddAuthenticationStateSerialization(x => x.SerializeAllClaims = true);
 builder.Services.AddControllers();
 builder.Services.AddDataProtection().PersistKeysToDbContext<TradingDbContext>();
 

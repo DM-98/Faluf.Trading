@@ -1,5 +1,4 @@
 ﻿using Faluf.Trading.Blazor.Client.Services;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Serilog;
 using Serilog.Events;
@@ -28,7 +27,7 @@ internal static class ServiceCollectionHelper
 	{
 		services.AddAuthorizationCore();
 		services.AddCascadingAuthenticationState();
-		services.AddSingleton<AuthenticationStateProvider, ClientAuthenticationStateProvider>();
+		services.AddAuthenticationStateDeserialization();
 	}
 
 	public static void AddTradingServices(this IServiceCollection services)

@@ -41,7 +41,7 @@ internal static class ServiceCollectionHelper
 		// Validations
 		builder.Services.AddValidatorsFromAssembly(Assembly.Load("Faluf.Trading.Core"));
 
-		// HttpContextAccessor for authentication
+		// HttpContextAccessor
 		builder.Services.AddHttpContextAccessor();
 	}
 

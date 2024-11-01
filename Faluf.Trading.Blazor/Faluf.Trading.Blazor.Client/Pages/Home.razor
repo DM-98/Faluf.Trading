@@ -16,6 +16,8 @@
 	Renderer: @RendererInfo.Name
 </p>
 
+<button class="btn btn-primary" @onclick="ThrowTestException">Throw test exception</button>
+
 <AuthorizeView>
 	<Authorized>
 		<p>Hello, @context.User.Identity?.Name!</p>
@@ -25,3 +27,10 @@
 		<p>You are not logged in.</p>
 	</NotAuthorized>
 </AuthorizeView>
+
+@code {
+	void ThrowTestException()
+	{
+		throw new Exception("Test exception");
+	}
+}
