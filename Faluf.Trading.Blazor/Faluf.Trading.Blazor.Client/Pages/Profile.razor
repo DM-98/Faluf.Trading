@@ -1,0 +1,12 @@
+﻿@page "/manage"
+
+<h3>Manage</h3>
+
+<AuthorizeView>
+	<Authorized>
+		<p>Hello, @context.User.Identity?.Name!</p>
+	</Authorized>
+	<NotAuthorized>
+		<p>You are not logged in.</p>
+	</NotAuthorized>
+</AuthorizeView>
