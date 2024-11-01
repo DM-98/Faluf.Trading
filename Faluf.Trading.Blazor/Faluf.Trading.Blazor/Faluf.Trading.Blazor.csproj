@@ -25,10 +25,4 @@
 		<ProjectReference Include="..\..\Faluf.Trading.Infrastructure\Faluf.Trading.Infrastructure.csproj" />
 		<ProjectReference Include="..\Faluf.Trading.Blazor.Client\Faluf.Trading.Blazor.Client.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Update="Pages\StatusCode.razor">
-	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	  </Content>
-	</ItemGroup>
 </Project>
