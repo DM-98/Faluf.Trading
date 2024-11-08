@@ -6,7 +6,7 @@ A hobby project with focus on:
 - [x] Serilog Sinks
 - [x] Result pattern
 - [x] Type-based Localization
-- [x] Authentication and Authorization with BCrypt.Net-Next
+- [x] Authentication and Authorization (BCrypt.Net-Next for password hashing)
 - [x] Mapster
 - [x] OpenAPI
 - [x] FluentValidation
